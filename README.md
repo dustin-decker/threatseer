@@ -3,7 +3,7 @@
 efficient telemetry on important system events and Meltdown + Spectre exploitation attempts
 
 <p align="center">
-  <img src="img/gopher.svg"/>
+  <img src="img/gopher.svg" width="200"/>
 </p>
 
 So far threatseer is a basic implementation of the examples included with Capsule8. It will quickly evolve to be more.
@@ -18,19 +18,19 @@ This project provides:
 
 
 <p align="center">
-  <img src="img/threatseer-arch.svg"/>
+  <img src="img/threatseer-arch.svg" width="500"/>
 </p>
 
 ## container logging
 Universal solution. Just log json blobs to stdout.
 
 <p align="center">
-  <img src="img/container-logging.svg"/>
+  <img src="img/container-logging.svg" width="500"/>
 </p>
 
 ## logging pipeline
 Enriched, interactive investigation experience with structured data.
 
 <p align="center">
-  <img src="img/logging-pipeline.svg"/>
+  <img src="img/logging-pipeline.svg" width="500"/>
 </p>
