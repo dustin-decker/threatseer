@@ -28,6 +28,12 @@ At a high level this project provides:
 - SOON: Kubernetes, Swarm, and local deployments
 - SOON: Prometheus exporter integration
 
+## getting telemeyry
+
+By default events are logged to stdout as JSON blobs. An example universal container logging pipeline described below works well with this.
+
+Alternatively, you can use one of the dozens of [logging hooks](https://github.com/sirupsen/logrus#hooks), make your own logging hook, or use any [io.Writer](https://godoc.org/github.com/sirupsen/logrus#SetOutput).
+
 ## threatseer on Kubernetes
 
 
