@@ -8,6 +8,8 @@ import (
 	"strings"
 	"time"
 
+	"encoding/json"
+
 	"golang.org/x/net/context"
 
 	"google.golang.org/grpc"
@@ -214,18 +216,16 @@ func (srv *Server) Telemetry() {
 		}
 
 		for _, e := range ev.Events {
-			// e.GetEvent()
-			// log.Info(e.String())
-			log.WithFields(log.Fields{
-				"event": e.GetEvent(),
-			}).Info()
-			// log.WithFields(log.Fields{
-			// 	"PID":           e.Event.GetProcessPid(),
-			// 	"program":       e.Event.GetProcessLineage(),
-			// 	"containerName": e.Event.GetContainerName(),
-			// 	"process":       e.Event.GetProcess().,
-			// }).Info()
-			// log.Info(e)
+			evnt := toFields(e.GetEvent())
+			log.WithFields(evnt).Info()
 		}
 	}
+}
+
+func toFields(e *api.TelemetryEvent) (fields log.Fields) {
+	tmp, _ := json.Marshal(e)
+	var evnt map[string]interface{}
+	json.Unmarshal(tmp, &evnt)
+	fields = evnt
+	return
 }
