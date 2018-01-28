@@ -4,6 +4,7 @@
   <img src="img/gopher.svg" width="200"/>
 </p>
 
+[![Build Status](https://travis-ci.org/dustin-decker/threatseer.svg?branch=master)](https://travis-ci.org/dustin-decker/threatseer)
 
 ## what is it?
 
