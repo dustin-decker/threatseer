@@ -8,6 +8,9 @@ help: ## this help
 
 build-agent: ## build the threatseer agent
 	docker build -t dustindecker/threatseer . -f build/package/Dockerfile.agent
+	docker run --name builder-copy-deployable dustindecker/threatseer /bin/true
+	docker cp builder-copy-deployable:/agent ./bin/agent
+	docker rm -f builder-copy-deployable
 
 clean: ## remove binaries
 	rm -rf bin/*
