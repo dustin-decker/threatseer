@@ -1,13 +1,13 @@
 # threatseer
 
-efficient behavioral telemetry and actions on important system events and Meltdown + Spectre exploitation attempts
-
 <p align="center">
   <img src="img/gopher.svg" width="200"/>
 </p>
 
 
 ## what is it?
+
+Threatseer provides efficient behavioral telemetry and actions on important system events and Meltdown + Spectre exploitation attempts.
 
 Auditd is a firehose of data, and a lot of it you don't want. Threatseer is backed by [Capsule8](https://github.com/capsule8/capsule8), which makes efficient use of kernel performance and tracing tools like perf, kprobe, the Docker API, and eBPF to provide efficient, event driven behavioral montoring. Hook it up to action daemons and take control of the situation.
 
