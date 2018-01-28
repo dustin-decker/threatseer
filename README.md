@@ -6,9 +6,14 @@ efficient behavioral telemetry and actions on important system events and Meltdo
   <img src="img/gopher.svg" width="200"/>
 </p>
 
+
+## what is it?
+
 Auditd is a firehose of data. Threatseer is backed by [Capsule8](https://github.com/capsule8/capsule8), which makes efficient use of kernel performance and tracing tools like perf and eBPF to provide efficient, event driven behavioral montoring. Hook it up to action daemons and take control of the situation.
 
 So far threatseer is a basic implementation of the examples included with [Capsule8](https://github.com/capsule8/capsule8).
+
+## features
 
 At a high level this project provides:
 
