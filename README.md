@@ -21,7 +21,9 @@ At a high level this project provides:
   - container lifecycle
   - open() on sensitive data
   - fork, exec, and other risky syscalls
+- low resource cost: ~3% of one CPU core, ~20MiB RAM
 
+TODO:
 
 - SOON: templates for actions under conditions
 - SOON: a Kubernetes daemon to take action under conditions (bouncer)
