@@ -33,6 +33,28 @@ TODO:
 
 ## build and run
 
+### local
+
+Fetch the deps:
+
+``` bash
+dep ensure
+```
+
+Build the binary:
+
+``` bash
+CGO_ENABLED=0 go build -o bin/agent cmd/agent/main.go
+```
+
+Run the binary (pretty printed with jq):
+
+``` bash
+sudo ./bin/agent 2>&1 | jq '.'
+```
+
+### Docker
+
 Make the docker image:
 
 ``` bash
