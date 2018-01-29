@@ -134,7 +134,7 @@ func alarm(srv *Server, sr *perf.SampleRecord, counters eventCounters) {
 	if LLCLoadMissRate > alarmThresholdError {
 		log.WithFields(log.Fields{
 			"hostname":        srv.Hostname,
-			"attack":          "l3 cache miss timing",
+			"attack":          "L3 cache miss timing",
 			"PID":             sr.Pid,
 			"LLCLoadMissRate": LLCLoadMissRate,
 		}).Error()

@@ -13,6 +13,8 @@ Threatseer uses [Capsule8](https://github.com/capsule8/capsule8), which makes us
 
 So far threatseer is a basic implementation of the examples included with [Capsule8](https://github.com/capsule8/capsule8).
 
+It's a really, young, immature project. Obviously use at your own risk, and help make it better.
+
 ## features
 
 At a high level this project provides:
