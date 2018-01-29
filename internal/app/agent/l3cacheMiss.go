@@ -131,12 +131,12 @@ func onSample(srv *Server, sr *perf.SampleRecord, eventAttrMap map[uint64]*perf.
 func alarm(srv *Server, sr *perf.SampleRecord, counters eventCounters) {
 	LLCLoadMissRate := float32(counters.LLCLoadMisses) / float32(counters.LLCLoads)
 
-	if LLCLoadMissRate > alarmThresholdError {
+	if LLCLoadMissRate > alarmThresholdWarning {
 		log.WithFields(log.Fields{
 			"hostname":        srv.Hostname,
 			"attack":          "L3 cache miss timing",
 			"PID":             sr.Pid,
 			"LLCLoadMissRate": LLCLoadMissRate,
-		}).Error()
+		}).Warn()
 	}
 }
