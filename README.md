@@ -86,12 +86,12 @@ successful blind remote code execution callback
 
 ## threatseer on Kubernetes
 
-
 <p align="center">
   <img src="img/threatseer-arch.svg" width="500"/>
 </p>
 
 ## container logging
+
 Universal solution. Just log json blobs to stdout. Ending with producing to Kafka.
 
 <p align="center">
@@ -99,10 +99,13 @@ Universal solution. Just log json blobs to stdout. Ending with producing to Kafk
 </p>
 
 ## logging pipeline, continued
+
 Enriched, interactive investigation experience with structured data. Starting from consuming from Kafka.
 
 <p align="center">
   <img src="img/logging-pipeline.svg" width="500"/>
 </p>
 
+## acknowledgements
 
+- [Capsule8](https://capsule8.com/) for their [ opensource library](https://github.com/capsule8/capsule8) that made the initial implementation possible. They're the ones doing the actual innovation and work, and it sounds like the have an [interesting product](https://capsule8.com/product/#platform) on the way based it. 
