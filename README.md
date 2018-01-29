@@ -31,6 +31,30 @@ TODO:
 - SOON: Kubernetes, Swarm, and local deployments
 - SOON: Prometheus exporter integration
 
+## build and run
+
+Make the docker image:
+
+``` bash
+make build-agent
+```
+
+Run the image:
+
+``` bash
+docker run \
+  --privileged \
+  --name threatseer \
+  --rm \
+  -it \
+  -v /proc:/var/run/capsule8/proc/:ro \
+  -v /sys/kernel/debug:/sys/kernel/debug \
+  -v /sys/fs/cgroup:/sys/fs/cgroup \
+  -v /var/lib/docker:/var/lib/docker:ro \
+  -v /var/run/docker:/var/run/docker:ro \
+  dustindecker/threatseer
+```
+
 ## getting telemetry
 
 By default events are logged to stdout as JSON blobs. An example universal container logging pipeline described below works well with this.
