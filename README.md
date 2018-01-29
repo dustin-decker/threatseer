@@ -106,6 +106,10 @@ Enriched, interactive investigation experience with structured data. Starting fr
   <img src="img/logging-pipeline.svg" width="500"/>
 </p>
 
+## status
+
+Threatseer is in a rapidly changing state so you should not count on stability or the data it outputs.
+
 ## acknowledgements
 
-- [Capsule8](https://capsule8.com/) for their [ opensource library](https://github.com/capsule8/capsule8) that made the initial implementation possible. They're the ones doing the actual innovation and work, and it sounds like the have an [interesting product](https://capsule8.com/product/#platform) on the way based it. 
+- [Capsule8](https://capsule8.com/) for their [ opensource library](https://github.com/capsule8/capsule8) that made the initial implementation possible. They're the ones doing the actual innovation and work, and it sounds like the have an [interesting product](https://capsule8.com/product/#platform) on the way based it.
