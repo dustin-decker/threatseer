@@ -37,28 +37,6 @@ By default events are logged to stdout as JSON blobs. An example universal conta
 
 Alternatively, you can use one of the dozens of [logging hooks](https://github.com/sirupsen/logrus#hooks), make your own logging hook, or use any [io.Writer](https://godoc.org/github.com/sirupsen/logrus#SetOutput).
 
-## threatseer on Kubernetes
-
-
-<p align="center">
-  <img src="img/threatseer-arch.svg" width="500"/>
-</p>
-
-## container logging
-Universal solution. Just log json blobs to stdout. Ending with producing to Kafka.
-
-<p align="center">
-  <img src="img/container-logging.svg" width="500"/>
-</p>
-
-## logging pipeline, continued
-Enriched, interactive investigation experience with structured data. Starting from consuming from Kafka.
-
-<p align="center">
-  <img src="img/logging-pipeline.svg" width="500"/>
-</p>
-
-
 ## example telemetry
 
 ### L3 cache timing attack (could be Meltdown, Spectre, Rowhammer or others)
@@ -105,3 +83,26 @@ successful blind remote code execution callback
 }
 
 ```
+
+## threatseer on Kubernetes
+
+
+<p align="center">
+  <img src="img/threatseer-arch.svg" width="500"/>
+</p>
+
+## container logging
+Universal solution. Just log json blobs to stdout. Ending with producing to Kafka.
+
+<p align="center">
+  <img src="img/container-logging.svg" width="500"/>
+</p>
+
+## logging pipeline, continued
+Enriched, interactive investigation experience with structured data. Starting from consuming from Kafka.
+
+<p align="center">
+  <img src="img/logging-pipeline.svg" width="500"/>
+</p>
+
+
