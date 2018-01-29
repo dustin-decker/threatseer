@@ -58,14 +58,14 @@ func createSubscription() *api.Subscription {
 	}
 
 	syscallEvents := []*api.SyscallEventFilter{
-		// Get all open(2) syscalls that return an error
-		&api.SyscallEventFilter{
-			Type: api.SyscallEventType_SYSCALL_EVENT_TYPE_EXIT,
+	// Get all open(2) syscalls that return an error
+	// &api.SyscallEventFilter{
+	// 	Type: api.SyscallEventType_SYSCALL_EVENT_TYPE_EXIT,
 
-			Id: &wrappers.Int64Value{
-				Value: 2, // SYS_OPEN
-			},
-		},
+	// 	Id: &wrappers.Int64Value{
+	// 		Value: 2, // SYS_OPEN
+	// 	},
+	// },
 	}
 
 	fileEvents := []*api.FileEventFilter{
