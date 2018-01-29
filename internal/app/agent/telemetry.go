@@ -215,14 +215,14 @@ func (srv *Server) Telemetry() {
 		}
 
 		for _, e := range ev.Events {
-			evnt := toFields(e.GetEvent())
+			evnt := toFields(e)
 			log.WithFields(evnt).Info()
 		}
 	}
 }
 
-func toFields(e *api.TelemetryEvent) (fields log.Fields) {
-	tmp, _ := json.Marshal(e)
+func toFields(e *api.ReceivedTelemetryEvent) (fields log.Fields) {
+	tmp, _ := json.Marshal(e.GetEvent())
 	var evnt map[string]interface{}
 	json.Unmarshal(tmp, &evnt)
 	fields = evnt
