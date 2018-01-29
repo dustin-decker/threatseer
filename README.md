@@ -10,7 +10,7 @@
 
 Threatseer provides efficient behavioral telemetry and actions on important system events and Meltdown + Spectre exploitation attempts.
 
-Auditd is a firehose of data, and a lot of it you don't want. Threatseer is backed by [Capsule8](https://github.com/capsule8/capsule8), which makes efficient use of kernel performance and tracing tools like perf, kprobe, the Docker API, and eBPF to provide efficient, event driven behavioral montoring. Hook it up to action daemons and take control of the situation.
+Auditd collects a firehose of data, and a lot of it you don't want, so you make it work even more to filter it out.  Threatseer is backed by [Capsule8](https://github.com/capsule8/capsule8), which makes use of kernel performance and tracing tools like perf, kprobe, and the Docker API to provide efficient, event driven behavioral montoring. Hook it up to action daemons and take control of the situation.
 
 So far threatseer is a basic implementation of the examples included with [Capsule8](https://github.com/capsule8/capsule8).
 
@@ -20,9 +20,10 @@ At a high level this project provides:
 
 - event-driven structured data of important system events
   - container lifecycle
-  - open() on sensitive data
+  - processes touching sensitive data
   - fork, exec, and other risky syscalls
 - low resource cost: ~3% of one CPU core, ~20MiB RAM
+- ~15mb statically compiled binary deployable
 
 TODO:
 
@@ -76,36 +77,32 @@ Enriched, interactive investigation experience with structured data. Starting fr
 
 ### container exec
 
+successful blind remote code execution callback
+
 ``` json
 {
-   "Event":{
-      "Process":{
-         "exec_command_line":[
-            "cat",
-            "/etc/passwd"
-         ],
-         "exec_filename":"/bin/cat",
-         "type":2
-      }
-   },
-   "cpu":2,
-   "credentials":{
-      "egid":0,
-      "euid":0,
-      "fsuid":0,
-      "gid":0,
-      "sgid":0,
-      "suid":0,
-      "uid":0
-   },
-   "id":"a6183871dd954f802087612d7ab5ee1c54ce08fbb4a1f6b8cd8fe7763feef8de",
-   "level":"info",
-   "msg":"",
-   "process_id":"78486fd1d267dc08d348b62bf2a353bd0937695e5d92654f4e8e9a31180f889f",
-   "process_pid":3338,
-   "sensor_id":"5576a4e456d58e73649af776d07e7eba4b5c8e9d421902409a68c0d6baf48dcf",
-   "sensor_monotime_nanos":1517122986914084400,
-   "sensor_sequence_number":58,
-   "time":"2018-01-28T12:50:46-06:00"
+  "Event": {
+    "Process": {
+      "exec_command_line": [
+        "sh",
+        "-c",
+        "dig +short ifjeow0234f90iwefo2odj.wat.lol"
+      ],
+      "exec_filename": "/bin/sh",
+      "type": 2
+    }
+  },
+  "container_id": "06cba6bc8583000803f75cd4ce88a9723497e716859eb820f35bef48582e9e3f",
+  "container_name": "/dazzling_darwin",
+  "credentials": {},
+  "id": "7d59493a8d9d4ccbee584940628c8bad5ad6a9de7b3762b3138bcab988957e95",
+  "image_id": "3fd9065eaf02feaf94d68376da52541925650b81698c53c6824d92ff63f98353",
+  "image_name": "alpine",
+  "process_pid": 3943,
+  "sensor_id": "9a608f32bc59f6d1b5ba579170fff34401ffd1840f3695f9e18a45eef7103125",
+  "sensor_monotime_nanos": 1517123007197660400,
+  "sensor_sequence_number": 223,
+  "time": "2018-01-28T18:04:04-06:00"
 }
+
 ```
