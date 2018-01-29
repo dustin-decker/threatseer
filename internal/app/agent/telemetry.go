@@ -1,7 +1,6 @@
 package agent
 
 import (
-	"flag"
 	"fmt"
 	"net"
 	"os"
@@ -26,15 +25,6 @@ var config struct {
 	image  string
 }
 
-func init() {
-	flag.StringVar(&config.server, "server",
-		"unix:/var/run/capsule8/sensor.sock",
-		"Capsule8 gRPC API server address")
-
-	flag.StringVar(&config.image, "image", "",
-		"container image wildcard pattern to monitor")
-}
-
 // Custom gRPC Dialer that understands "unix:/path/to/sock" as well as TCP addrs
 func dialer(addr string, timeout time.Duration) (net.Conn, error) {
 	var network, address string
@@ -54,7 +44,7 @@ func dialer(addr string, timeout time.Duration) (net.Conn, error) {
 func createSubscription() *api.Subscription {
 	processEvents := []*api.ProcessEventFilter{
 		//
-		// Get all process lifecycle events
+		// Get process lifecycle events
 		//
 		&api.ProcessEventFilter{
 			Type: api.ProcessEventType_PROCESS_EVENT_TYPE_FORK,
@@ -62,20 +52,20 @@ func createSubscription() *api.Subscription {
 		&api.ProcessEventFilter{
 			Type: api.ProcessEventType_PROCESS_EVENT_TYPE_EXEC,
 		},
-		&api.ProcessEventFilter{
-			Type: api.ProcessEventType_PROCESS_EVENT_TYPE_EXIT,
-		},
+		// &api.ProcessEventFilter{
+		// 	Type: api.ProcessEventType_PROCESS_EVENT_TYPE_EXIT,
+		// },
 	}
 
 	syscallEvents := []*api.SyscallEventFilter{
-	// // Get all open(2) syscalls that return an error
-	// &api.SyscallEventFilter{
-	// 	Type: api.SyscallEventType_SYSCALL_EVENT_TYPE_EXIT,
+		// Get all open(2) syscalls that return an error
+		&api.SyscallEventFilter{
+			Type: api.SyscallEventType_SYSCALL_EVENT_TYPE_EXIT,
 
-	// 	Id: &wrappers.Int64Value{
-	// 		Value: 2, // SYS_OPEN
-	// 	},
-	// },
+			Id: &wrappers.Int64Value{
+				Value: 2, // SYS_OPEN
+			},
+		},
 	}
 
 	fileEvents := []*api.FileEventFilter{
@@ -90,7 +80,7 @@ func createSubscription() *api.Subscription {
 			// (*,?) and character classes ([).
 			//
 			FilenamePattern: &wrappers.StringValue{
-				Value: "*foo*",
+				Value: "/etc/shadow",
 			},
 		},
 	}
@@ -115,9 +105,7 @@ func createSubscription() *api.Subscription {
 	}
 
 	containerEvents := []*api.ContainerEventFilter{
-		//
-		// Get all container lifecycle events
-		//
+		// get all container lifecycle events
 		&api.ContainerEventFilter{
 			Type: api.ContainerEventType_CONTAINER_EVENT_TYPE_CREATED,
 		},
@@ -132,11 +120,21 @@ func createSubscription() *api.Subscription {
 		},
 	}
 
+	networkEvents := []*api.NetworkEventFilter{
+		// get interesting network events
+		&api.NetworkEventFilter{
+			Type: api.NetworkEventType_NETWORK_EVENT_TYPE_LISTEN_RESULT,
+		},
+		// &api.NetworkEventFilter{
+		// 	Type: api.NetworkEventType_NETWORK_EVENT_TYPE_LISTEN_ATTEMPT,
+		// },
+	}
+
 	// Ticker events are used for debugging and performance testing
 	tickerEvents := []*api.TickerEventFilter{
-		&api.TickerEventFilter{
-			Interval: int64(1 * time.Second),
-		},
+	// &api.TickerEventFilter{
+	// 	Interval: int64(1 * time.Second),
+	// },
 	}
 
 	chargenEvents := []*api.ChargenEventFilter{
@@ -153,6 +151,7 @@ func createSubscription() *api.Subscription {
 		KernelEvents:    kernelCallEvents,
 		FileEvents:      fileEvents,
 		ContainerEvents: containerEvents,
+		NetworkEvents:   networkEvents,
 		TickerEvents:    tickerEvents,
 		ChargenEvents:   chargenEvents,
 	}
@@ -182,7 +181,7 @@ func (srv *Server) Telemetry() {
 	log.Info("starting telemetry")
 
 	// Create telemetry service client
-	conn, err := grpc.Dial(config.server,
+	conn, err := grpc.Dial("unix:/var/run/capsule8/sensor.sock",
 		grpc.WithDialer(dialer),
 		grpc.WithInsecure())
 
