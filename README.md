@@ -9,9 +9,9 @@
 ## what is it?
 
 Threatseer provides efficient behavioral telemetry and actions on important system events and Meltdown + Spectre exploitation attempts.
-Threatseer uses [Capsule8](https://github.com/capsule8/capsule8), which makes use of kernel performance and tracing tools like perf, kprobe, and the Docker API to provide efficient, event driven behavioral montoring. Hook it up to action daemons and take control of the situation.
+Threatseer uses [Capsule8](https://github.com/capsule8/capsule8), which makes use of kernel performance tooling and daemon APIs to provide efficient, event driven behavioral montoring. Trigger actions with the events and take control of the situation.
 
-So far threatseer is a basic implementation of the examples included with [Capsule8](https://github.com/capsule8/capsule8).
+So far threatseer is  basic implementation of the examples included with [Capsule8](https://github.com/capsule8/capsule8).
 
 It's a really young, immature project. Obviously use at your own risk, and help make it better.
 
@@ -91,12 +91,15 @@ Alternatively, you can use one of the dozens of [logging hooks](https://github.c
 
 ``` json
 {
-   "LLCLoadMissRate":0.9945989,
-   "PID":13933,
-   "attack":"L3 cache miss timing",
-   "hostname":"lol-victimbox1",
-   "level":"error",
-   "time":"2018-01-28T13:12:13-06:00"
+  "pid": 9071,
+  "container_id": "ff426288ea903fcf8d91aca97460c613348f7a27195606b45f19ae91776ca23d",
+  "container_image": "centos",
+  "container_name": "/cranky_shrubbery",
+  "hostname": "victimbox1",
+  "l3_cache_miss_rate": 0.98009,
+  "level": "warning",
+  "msg": "possible Meltdown | Spectre | Rowhammer | other attack utilizing L3 cache miss timing detected",
+  "time": "2018-01-30T19:37:25-06:00"
 }
 ```
 

@@ -132,11 +132,23 @@ func alarm(srv *Server, sr *perf.SampleRecord, counters eventCounters) {
 	LLCLoadMissRate := float32(counters.LLCLoadMisses) / float32(counters.LLCLoads)
 
 	if LLCLoadMissRate > alarmThresholdWarning {
-		log.WithFields(log.Fields{
+		evnt := log.Fields{
 			"hostname":        srv.Hostname,
 			"attack":          "L3 cache miss timing",
-			"PID":             sr.Pid,
+			"pid":             sr.Pid,
 			"LLCLoadMissRate": LLCLoadMissRate,
-		}).Warn()
+		}
+
+		if task, ok := srv.Sensor.ProcessCache.LookupTask(int(sr.Pid)); ok {
+			containerInfo := srv.Sensor.ProcessCache.LookupTaskContainerInfo(task)
+			if containerInfo != nil {
+				evnt["container_name"] = containerInfo.Name
+				evnt["container_id"] = containerInfo.ID
+				evnt["container_image"] = containerInfo.ImageName
+				evnt["container_id"] = containerInfo.ImageID
+			}
+
+			log.WithFields(evnt).Warn("Possible Meltdown | Spectre | Rowhammer | other attack utilizing L3 cache miss timing detected")
+		}
 	}
 }

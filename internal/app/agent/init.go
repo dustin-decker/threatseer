@@ -4,6 +4,9 @@ import (
 	"os"
 	"os/signal"
 
+	"github.com/capsule8/capsule8/pkg/config"
+	"github.com/capsule8/capsule8/pkg/sensor"
+	"github.com/capsule8/capsule8/pkg/services"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -13,22 +16,43 @@ type Server struct {
 	MacAddr  string
 	IP       string
 	Signals  chan os.Signal
+	Sensor   *sensor.Sensor
 }
 
 // NewAgentServer populates initial state
 func NewAgentServer() *Server {
 	hostname, err := os.Hostname()
 	if err != nil {
-		log.Fatalf("couldn't get hostname: %v", err)
+		log.Fatal("couldn't get hostname: ", err)
 	}
 
 	// Exit cleanly on Control-C
 	signals := make(chan os.Signal)
 	signal.Notify(signals, os.Interrupt)
 
+	manager := services.NewServiceManager()
+	if len(config.Global.ProfilingListenAddr) > 0 {
+		service := services.NewProfilingService(
+			config.Global.ProfilingListenAddr)
+		manager.RegisterService(service)
+	}
+
+	s, err := sensor.NewSensor()
+	if err != nil {
+		log.Fatal("could not create sensor: ", err.Error())
+	}
+	if err := s.Start(); err != nil {
+		log.Fatal("could not start sensor: ", err.Error())
+	}
+	service := sensor.NewTelemetryService(s, config.Sensor.ListenAddr)
+	manager.RegisterService(service)
+
+	go manager.Run()
+
 	srv := Server{
 		Hostname: hostname,
 		Signals:  signals,
+		Sensor:   s,
 	}
 	return &srv
 }

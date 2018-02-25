@@ -20,11 +20,6 @@ import (
 	"github.com/golang/protobuf/ptypes/wrappers"
 )
 
-var config struct {
-	server string
-	image  string
-}
-
 // Custom gRPC Dialer that understands "unix:/path/to/sock" as well as TCP addrs
 func dialer(addr string, timeout time.Duration) (net.Conn, error) {
 	var network, address string
@@ -160,19 +155,6 @@ func createSubscription() *api.Subscription {
 		EventFilter: eventFilter,
 	}
 
-	if config.image != "" {
-		fmt.Fprintf(os.Stderr,
-			"Watching for container images matching %s\n",
-			config.image)
-
-		containerFilter := &api.ContainerFilter{}
-
-		containerFilter.ImageNames =
-			append(containerFilter.ImageNames, config.image)
-
-		sub.ContainerFilter = containerFilter
-	}
-
 	return sub
 }
 
@@ -184,6 +166,9 @@ func (srv *Server) Telemetry() {
 	conn, err := grpc.Dial("unix:/var/run/capsule8/sensor.sock",
 		grpc.WithDialer(dialer),
 		grpc.WithInsecure())
+	if err != nil {
+		log.Fatal("could not start telemetry service client: ", err)
+	}
 
 	c := api.NewTelemetryServiceClient(conn)
 	if err != nil {
@@ -215,13 +200,13 @@ func (srv *Server) Telemetry() {
 		}
 
 		for _, e := range ev.Events {
-			evnt := toFields(e)
+			evnt := telemetryToFields(e)
 			log.WithFields(evnt).Info()
 		}
 	}
 }
 
-func toFields(e *api.ReceivedTelemetryEvent) (fields log.Fields) {
+func telemetryToFields(e *api.ReceivedTelemetryEvent) (fields log.Fields) {
 	tmp, _ := json.Marshal(e.GetEvent())
 	var evnt map[string]interface{}
 	json.Unmarshal(tmp, &evnt)

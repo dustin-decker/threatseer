@@ -7,7 +7,6 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/capsule8/capsule8/pkg/sensor"
 	"github.com/dustin-decker/threatseer/internal/app/agent"
 )
 
@@ -18,9 +17,7 @@ func main() {
 
 	srv := agent.NewAgentServer()
 
-	go sensor.Main()
-
-	time.Sleep(10 * time.Second)
+	time.Sleep(5 * time.Second)
 
 	go srv.L3missDetector()
 
