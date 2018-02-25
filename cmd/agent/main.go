@@ -23,6 +23,8 @@ func main() {
 
 	go srv.Telemetry()
 
+	go srv.Systemd()
+
 	// keep running
 	runtime.Goexit()
 
