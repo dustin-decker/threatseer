@@ -14,6 +14,7 @@ const (
 	interval = 5
 )
 
+// Systemd watches suscribes to unit changes from D-Bus
 func (srv *Server) Systemd() {
 
 	b := &backoff.Backoff{
