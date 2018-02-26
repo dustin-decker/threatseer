@@ -119,6 +119,9 @@ func createSubscription() *api.Subscription {
 		&api.NetworkEventFilter{
 			Type: api.NetworkEventType_NETWORK_EVENT_TYPE_LISTEN_RESULT,
 		},
+		&api.NetworkEventFilter{
+			Type: api.NetworkEventType_NETWORK_EVENT_TYPE_BIND_RESULT,
+		},
 		// &api.NetworkEventFilter{
 		// 	Type: api.NetworkEventType_NETWORK_EVENT_TYPE_LISTEN_ATTEMPT,
 		// },
