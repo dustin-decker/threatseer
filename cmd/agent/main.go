@@ -13,11 +13,13 @@ import (
 func main() {
 	config := configs.Config{
 		ContainerEvents:  true,
+		SystemdEvents:    false,
+		CacheMissEvents:  true,
 		ProcessEvents:    false,
 		NetworkEvents:    false,
 		SyscallEvents:    false,
 		KernelCallEvents: false,
-		FileEvents:       true,
+		FileEvents:       false,
 		FilePatterns: []string{
 			"/etc/shadow",
 			"/var/lib/mysql/*",
@@ -36,7 +38,9 @@ func main() {
 
 	go srv.Telemetry()
 
-	go srv.Systemd()
+	if srv.Config.SystemdEvents {
+		go srv.Systemd()
+	}
 
 	// keep running
 	runtime.Goexit()
