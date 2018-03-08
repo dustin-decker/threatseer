@@ -15,7 +15,7 @@
     "pkg/sys/perf",
     "pkg/sys/proc"
   ]
-  revision = "2a21967ef3a75a00e9f4e39e68a688ba53dc5c46"
+  revision = "90b6bdbd0f91e90808068a3395be2bd20e46e3f2"
 
 [[projects]]
   name = "github.com/coreos/go-systemd"
@@ -98,7 +98,7 @@
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
-  revision = "49796115aa4b964c318aad4f3084fdb41e9aa067"
+  revision = "85f98707c97e11569271e4d9b3d397e079c4f4d0"
 
 [[projects]]
   branch = "master"
@@ -112,7 +112,7 @@
     "lex/httplex",
     "trace"
   ]
-  revision = "cbe0f9307d0156177f9dd5dc85da1a31abc5f2fb"
+  revision = "07e8617a6db2368fa55d4616f371ee1b1403c817"
 
 [[projects]]
   branch = "master"
@@ -121,7 +121,7 @@
     "unix",
     "windows"
   ]
-  revision = "f6cff0780e542efa0c8e864dc8fa522808f6a598"
+  revision = "349b81fb5c64ec1734eb6ee148df25459ea48517"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -151,7 +151,7 @@
     "googleapis/api/annotations",
     "googleapis/rpc/status"
   ]
-  revision = "2b5a72b8730b0b16380010cfe5286c42108d88e7"
+  revision = "df60624c1e9b9d2973e889c7a1cff73155da81c4"
 
 [[projects]]
   name = "google.golang.org/grpc"
@@ -185,6 +185,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "e5ccd88831b07a4566176bf1afaae8bd1deff58d7cd927753a63ed94c49a6da9"
+  inputs-digest = "11ee7acd5fc7bad3116649e58c76af462b63e8780f1e82bc564049a0a934edc0"
   solver-name = "gps-cdcl"
   solver-version = 1
