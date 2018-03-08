@@ -16,6 +16,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	api "github.com/capsule8/capsule8/api/v0"
+	"github.com/capsule8/capsule8/pkg/expression"
 	"github.com/golang/protobuf/ptypes/wrappers"
 )
 
@@ -35,7 +36,7 @@ func dialer(addr string, timeout time.Duration) (net.Conn, error) {
 	return net.DialTimeout(network, address, timeout)
 }
 
-func createSubscription() *api.Subscription {
+func createSubscription(srv *Server) *api.Subscription {
 	processEvents := []*api.ProcessEventFilter{
 		//
 		// Get process lifecycle events
@@ -52,14 +53,14 @@ func createSubscription() *api.Subscription {
 	}
 
 	syscallEvents := []*api.SyscallEventFilter{
-	// Get all open(2) syscalls that return an error
-	// &api.SyscallEventFilter{
-	// 	Type: api.SyscallEventType_SYSCALL_EVENT_TYPE_EXIT,
+		// Get all open(2) syscalls that return an error
+		&api.SyscallEventFilter{
+			Type: api.SyscallEventType_SYSCALL_EVENT_TYPE_EXIT,
 
-	// 	Id: &wrappers.Int64Value{
-	// 		Value: 2, // SYS_OPEN
-	// 	},
-	// },
+			Id: &wrappers.Int64Value{
+				Value: 2, // SYS_OPEN
+			},
+		},
 	}
 
 	fileEvents := []*api.FileEventFilter{
@@ -94,23 +95,23 @@ func createSubscription() *api.Subscription {
 		},
 	}
 
-	// sinFamilyFilter := expression.Equal(
-	// 	expression.Identifier("sin_family"),
-	// 	expression.Value(uint16(2)))
+	sinFamilyFilter := expression.Equal(
+		expression.Identifier("sin_family"),
+		expression.Value(uint16(2)))
 	kernelCallEvents := []*api.KernelFunctionCallFilter{
-	//
-	// Install a kprobe on connect(2)
-	//
-	// &api.KernelFunctionCallFilter{
-	// 	Type:   api.KernelFunctionCallEventType_KERNEL_FUNCTION_CALL_EVENT_TYPE_ENTER,
-	// 	Symbol: "SyS_connect",
-	// 	Arguments: map[string]string{
-	// 		"sin_family": "+0(%si):u16",
-	// 		"sin_port":   "+2(%si):u16",
-	// 		"sin_addr":   "+4(%si):u32",
-	// 	},
-	// 	FilterExpression: sinFamilyFilter,
-	// },
+		//
+		// Install a kprobe on connect(2)
+		//
+		&api.KernelFunctionCallFilter{
+			Type:   api.KernelFunctionCallEventType_KERNEL_FUNCTION_CALL_EVENT_TYPE_ENTER,
+			Symbol: "SyS_connect",
+			Arguments: map[string]string{
+				"sin_family": "+0(%si):u16",
+				"sin_port":   "+2(%si):u16",
+				"sin_addr":   "+4(%si):u32",
+			},
+			FilterExpression: sinFamilyFilter,
+		},
 	}
 
 	containerEvents := []*api.ContainerEventFilter{
@@ -130,16 +131,16 @@ func createSubscription() *api.Subscription {
 	}
 
 	networkEvents := []*api.NetworkEventFilter{
-	// get interesting network events
-	// &api.NetworkEventFilter{
-	// 	Type: api.NetworkEventType_NETWORK_EVENT_TYPE_LISTEN_RESULT,
-	// },
-	// &api.NetworkEventFilter{
-	// 	Type: api.NetworkEventType_NETWORK_EVENT_TYPE_BIND_RESULT,
-	// },
-	// &api.NetworkEventFilter{
-	// 	Type: api.NetworkEventType_NETWORK_EVENT_TYPE_LISTEN_ATTEMPT,
-	// },
+		// get interesting network events
+		&api.NetworkEventFilter{
+			Type: api.NetworkEventType_NETWORK_EVENT_TYPE_LISTEN_RESULT,
+		},
+		&api.NetworkEventFilter{
+			Type: api.NetworkEventType_NETWORK_EVENT_TYPE_BIND_RESULT,
+		},
+		&api.NetworkEventFilter{
+			Type: api.NetworkEventType_NETWORK_EVENT_TYPE_LISTEN_ATTEMPT,
+		},
 	}
 
 	// Ticker events are used for debugging and performance testing
@@ -158,14 +159,32 @@ func createSubscription() *api.Subscription {
 	}
 
 	eventFilter := &api.EventFilter{
-		ProcessEvents:   processEvents,
-		SyscallEvents:   syscallEvents,
-		KernelEvents:    kernelCallEvents,
-		FileEvents:      fileEvents,
-		ContainerEvents: containerEvents,
-		NetworkEvents:   networkEvents,
-		TickerEvents:    tickerEvents,
-		ChargenEvents:   chargenEvents,
+		TickerEvents:  tickerEvents,
+		ChargenEvents: chargenEvents,
+	}
+
+	if srv.Config.ProcessEvents {
+		eventFilter.ProcessEvents = processEvents
+	}
+
+	if srv.Config.SyscallEvents {
+		eventFilter.SyscallEvents = syscallEvents
+	}
+
+	if srv.Config.KernelCallEvents {
+		eventFilter.KernelEvents = kernelCallEvents
+	}
+
+	if srv.Config.FileEvents {
+		eventFilter.FileEvents = fileEvents
+	}
+
+	if srv.Config.ContainerEvents {
+		eventFilter.ContainerEvents = containerEvents
+	}
+
+	if srv.Config.NetworkEvents {
+		eventFilter.NetworkEvents = networkEvents
 	}
 
 	sub := &api.Subscription{
@@ -197,7 +216,7 @@ func (srv *Server) Telemetry() {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	stream, err := c.GetEvents(ctx, &api.GetEventsRequest{
-		Subscription: createSubscription(),
+		Subscription: createSubscription(srv),
 	})
 
 	go func() {

@@ -7,6 +7,7 @@ import (
 	"github.com/capsule8/capsule8/pkg/config"
 	"github.com/capsule8/capsule8/pkg/sensor"
 	"github.com/capsule8/capsule8/pkg/services"
+	"github.com/dustin-decker/threatseer/configs"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -17,10 +18,11 @@ type Server struct {
 	IP       string
 	Signals  chan os.Signal
 	Sensor   *sensor.Sensor
+	Config   configs.Config
 }
 
 // NewAgentServer populates initial state
-func NewAgentServer() *Server {
+func NewAgentServer(conf configs.Config) *Server {
 	hostname, err := os.Hostname()
 	if err != nil {
 		log.Fatal("couldn't get hostname: ", err)
@@ -53,6 +55,7 @@ func NewAgentServer() *Server {
 		Hostname: hostname,
 		Signals:  signals,
 		Sensor:   s,
+		Config:   conf,
 	}
 	return &srv
 }

@@ -153,7 +153,7 @@ func (t *counterTracker) alarm(sr *perf.SampleRecord, counters eventCounters) {
 				evnt["container_id"] = containerInfo.ImageID
 			}
 
-			log.WithFields(evnt).Warn("Possible Meltdown | Spectre | Rowhammer | other attack utilizing L3 cache miss timing detected")
+			log.WithFields(evnt).Warn("possible Meltdown | Spectre | Rowhammer | other attack utilizing L3 cache miss timing detected")
 		}
 	}
 }
