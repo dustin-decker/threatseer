@@ -64,8 +64,10 @@ func createSubscription() *api.Subscription {
 
 	fileEvents := []*api.FileEventFilter{
 		//
-		// Get all attempts to open files matching glob *foo*
+		// Get all attempts to open files matching pattern
 		//
+
+		// user password hashes
 		&api.FileEventFilter{
 			Type: api.FileEventType_FILE_EVENT_TYPE_OPEN,
 
@@ -75,6 +77,19 @@ func createSubscription() *api.Subscription {
 			//
 			FilenamePattern: &wrappers.StringValue{
 				Value: "/etc/shadow",
+			},
+		},
+
+		// mysql data dir
+		&api.FileEventFilter{
+			Type: api.FileEventType_FILE_EVENT_TYPE_OPEN,
+
+			//
+			// The glob accepts a wild card character
+			// (*,?) and character classes ([).
+			//
+			FilenamePattern: &wrappers.StringValue{
+				Value: "/var/lib/mysql/*",
 			},
 		},
 	}
@@ -115,16 +130,16 @@ func createSubscription() *api.Subscription {
 	}
 
 	networkEvents := []*api.NetworkEventFilter{
-		// get interesting network events
-		&api.NetworkEventFilter{
-			Type: api.NetworkEventType_NETWORK_EVENT_TYPE_LISTEN_RESULT,
-		},
-		&api.NetworkEventFilter{
-			Type: api.NetworkEventType_NETWORK_EVENT_TYPE_BIND_RESULT,
-		},
-		// &api.NetworkEventFilter{
-		// 	Type: api.NetworkEventType_NETWORK_EVENT_TYPE_LISTEN_ATTEMPT,
-		// },
+	// get interesting network events
+	// &api.NetworkEventFilter{
+	// 	Type: api.NetworkEventType_NETWORK_EVENT_TYPE_LISTEN_RESULT,
+	// },
+	// &api.NetworkEventFilter{
+	// 	Type: api.NetworkEventType_NETWORK_EVENT_TYPE_BIND_RESULT,
+	// },
+	// &api.NetworkEventFilter{
+	// 	Type: api.NetworkEventType_NETWORK_EVENT_TYPE_LISTEN_ATTEMPT,
+	// },
 	}
 
 	// Ticker events are used for debugging and performance testing
@@ -167,7 +182,9 @@ func (srv *Server) Telemetry() {
 	// Create telemetry service client
 	conn, err := grpc.Dial("unix:/var/run/capsule8/sensor.sock",
 		grpc.WithDialer(dialer),
-		grpc.WithInsecure())
+		grpc.WithInsecure(),
+		grpc.WithBlock(),
+		grpc.WithTimeout(1*time.Second))
 	if err != nil {
 		log.Fatal("could not start telemetry service client: ", err)
 	}
