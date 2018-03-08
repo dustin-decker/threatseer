@@ -34,7 +34,9 @@ func main() {
 
 	time.Sleep(5 * time.Second)
 
-	go srv.L3missDetector()
+	if srv.Config.CacheMissEvents {
+		go srv.L3missDetector()
+	}
 
 	go srv.Telemetry()
 
