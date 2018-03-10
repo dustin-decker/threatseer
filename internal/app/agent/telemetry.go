@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"os/signal"
 	"strings"
 	"time"
 
@@ -198,8 +199,17 @@ func createSubscription(srv *Server) *api.Subscription {
 func (srv *Server) Telemetry() {
 	log.Info("starting telemetry")
 
+	ctx, cancel := context.WithCancel(context.Background())
+	signals := make(chan os.Signal)
+	signal.Notify(signals, os.Interrupt)
+
+	go func() {
+		<-signals
+		cancel()
+	}()
+
 	// Create telemetry service client
-	conn, err := grpc.Dial("unix:/var/run/capsule8/sensor.sock",
+	conn, err := grpc.DialContext(ctx, "unix:/var/run/capsule8/sensor.sock",
 		grpc.WithDialer(dialer),
 		grpc.WithInsecure(),
 		grpc.WithBlock(),
@@ -214,15 +224,10 @@ func (srv *Server) Telemetry() {
 		os.Exit(1)
 	}
 
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel = context.WithCancel(context.Background())
 	stream, err := c.GetEvents(ctx, &api.GetEventsRequest{
 		Subscription: createSubscription(srv),
 	})
-
-	go func() {
-		<-srv.Signals
-		cancel()
-	}()
 
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "GetEvents: %s\n", err)

@@ -19,7 +19,7 @@ func main() {
 		NetworkEvents:    false,
 		SyscallEvents:    false,
 		KernelCallEvents: false,
-		FileEvents:       false,
+		FileEvents:       true,
 		FilePatterns: []string{
 			"/etc/shadow",
 			"/var/lib/mysql/*",
