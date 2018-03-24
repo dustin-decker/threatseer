@@ -2,7 +2,6 @@
 
 
 [[projects]]
-  branch = "master"
   name = "github.com/capsule8/capsule8"
   packages = [
     "api/v0",
@@ -10,12 +9,12 @@
     "pkg/expression",
     "pkg/sensor",
     "pkg/services",
-    "pkg/stream",
     "pkg/sys",
     "pkg/sys/perf",
     "pkg/sys/proc"
   ]
-  revision = "90b6bdbd0f91e90808068a3395be2bd20e46e3f2"
+  revision = "55727482015d47bc044855bcc91123e0cbbe6289"
+  version = "v0.9.0-alpha"
 
 [[projects]]
   name = "github.com/coreos/go-systemd"
@@ -91,14 +90,14 @@
 [[projects]]
   name = "github.com/sirupsen/logrus"
   packages = ["."]
-  revision = "d682213848ed68c0a260ca37d6dd5ace8423f5ba"
-  version = "v1.0.4"
+  revision = "c155da19408a8799da419ed3eeb0cb5db0ad5dbc"
+  version = "v1.0.5"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
-  revision = "85f98707c97e11569271e4d9b3d397e079c4f4d0"
+  revision = "88942b9c40a4c9d203b82b3731787b672d6e809b"
 
 [[projects]]
   branch = "master"
@@ -112,7 +111,7 @@
     "lex/httplex",
     "trace"
   ]
-  revision = "07e8617a6db2368fa55d4616f371ee1b1403c817"
+  revision = "6078986fec03a1dcc236c34816c71b0e05018fda"
 
 [[projects]]
   branch = "master"
@@ -121,7 +120,7 @@
     "unix",
     "windows"
   ]
-  revision = "349b81fb5c64ec1734eb6ee148df25459ea48517"
+  revision = "91ee8cde435411ca3f1cd365e8f20131aed4d0a1"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -149,9 +148,10 @@
   name = "google.golang.org/genproto"
   packages = [
     "googleapis/api/annotations",
+    "googleapis/rpc/code",
     "googleapis/rpc/status"
   ]
-  revision = "df60624c1e9b9d2973e889c7a1cff73155da81c4"
+  revision = "ab0870e398d5dd054b868c0db1481ab029b9a9f2"
 
 [[projects]]
   name = "google.golang.org/grpc"
@@ -185,6 +185,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "11ee7acd5fc7bad3116649e58c76af462b63e8780f1e82bc564049a0a934edc0"
+  inputs-digest = "e5ccd88831b07a4566176bf1afaae8bd1deff58d7cd927753a63ed94c49a6da9"
   solver-name = "gps-cdcl"
   solver-version = 1
