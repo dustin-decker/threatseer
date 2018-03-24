@@ -8,7 +8,7 @@
 
 ## what is it?
 
-Threatseer provides is an efficient linux endpoint telemetry solution.
+Threatseer provides security related telemetry from linux servers and workstations.
 For many of the features, threatseer uses [Capsule8](https://github.com/capsule8/capsule8), which makes use of kernel tracing tooling to general events for the kernel activity you're interested in. Threatseer makes of other telemetry sources too, such as the Systemd D-Bus API.
 
 It's a really young, immature project. Obviously use at your own risk, and help make it better.
