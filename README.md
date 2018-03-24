@@ -8,10 +8,8 @@
 
 ## what is it?
 
-Threatseer provides efficient behavioral telemetry and actions on important system events and Meltdown + Spectre exploitation attempts.
-Threatseer uses [Capsule8](https://github.com/capsule8/capsule8), which makes use of kernel performance tooling and daemon APIs to provide efficient, event driven behavioral montoring. Trigger actions with the events and take control of the situation.
-
-So far threatseer is  basic implementation of the examples included with [Capsule8](https://github.com/capsule8/capsule8).
+Threatseer provides is an efficient linux endpoint telemetry solution.
+For many of the features, threatseer uses [Capsule8](https://github.com/capsule8/capsule8), which makes use of kernel tracing tooling to general events for the kernel activity you're interested in. Threatseer makes of other telemetry sources too, such as the Systemd D-Bus API.
 
 It's a really young, immature project. Obviously use at your own risk, and help make it better.
 
