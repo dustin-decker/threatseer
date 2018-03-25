@@ -93,7 +93,7 @@ func (srv *Server) L3missDetector() {
 		tracker.decodeConfigLLCLoads,
 		perf.WithEventAttr(&attr))
 	if err != nil {
-		log.Errorf("could not register hardware cache event: %s", err)
+		log.Errorf("could not register hardware cache event. shutting down cache miss sensor: %s", err)
 		return
 	}
 
