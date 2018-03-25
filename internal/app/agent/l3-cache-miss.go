@@ -93,7 +93,8 @@ func (srv *Server) L3missDetector() {
 		tracker.decodeConfigLLCLoads,
 		perf.WithEventAttr(&attr))
 	if err != nil {
-		log.Fatalf("could not register hardware cache event: %s", err)
+		log.Errorf("could not register hardware cache event: %s", err)
+		return
 	}
 
 	log.Info("monitoring cache side channel misses")
