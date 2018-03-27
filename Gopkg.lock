@@ -14,6 +14,7 @@
     "pkg/sys/proc"
   ]
   revision = "55727482015d47bc044855bcc91123e0cbbe6289"
+  source = "https://github.com/dustin-decker/capsule8.git"
   version = "v0.9.0-alpha"
 
 [[projects]]
@@ -185,6 +186,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "e5ccd88831b07a4566176bf1afaae8bd1deff58d7cd927753a63ed94c49a6da9"
+  inputs-digest = "e2f9e4ad60af12ebbce9f6c9e909a616d1d2ae506107ee102581d3a46db2469f"
   solver-name = "gps-cdcl"
   solver-version = 1

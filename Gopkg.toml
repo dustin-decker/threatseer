@@ -23,7 +23,7 @@
 
 [[constraint]]
   name = "github.com/capsule8/capsule8"
-  branch = "master"
+  source = "https://github.com/dustin-decker/capsule8.git"
 
 [[constraint]]
   name = "github.com/sirupsen/logrus"
