@@ -1,14 +1,14 @@
 package agent
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"net"
 	"os"
 	"os/signal"
 	"strings"
 	"time"
-
-	"encoding/json"
 
 	"golang.org/x/net/context"
 
@@ -18,6 +18,7 @@ import (
 
 	api "github.com/capsule8/capsule8/api/v0"
 	"github.com/capsule8/capsule8/pkg/expression"
+	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/ptypes/wrappers"
 )
 
@@ -116,7 +117,9 @@ func createSubscription(srv *Server) *api.Subscription {
 	}
 
 	containerEvents := []*api.ContainerEventFilter{
-		// get all container lifecycle events
+		//
+		// Get all container lifecycle events
+		//
 		&api.ContainerEventFilter{
 			Type: api.ContainerEventType_CONTAINER_EVENT_TYPE_CREATED,
 		},
@@ -200,6 +203,7 @@ func (srv *Server) Telemetry() {
 	log.Info("starting telemetry")
 
 	ctx, cancel := context.WithCancel(context.Background())
+
 	signals := make(chan os.Signal)
 	signal.Notify(signals, os.Interrupt)
 
@@ -224,35 +228,37 @@ func (srv *Server) Telemetry() {
 		os.Exit(1)
 	}
 
-	ctx, cancel = context.WithCancel(context.Background())
 	stream, err := c.GetEvents(ctx, &api.GetEventsRequest{
 		Subscription: createSubscription(srv),
 	})
 
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "GetEvents: %s\n", err)
+		fmt.Fprintf(os.Stderr, "error creating event stream: %s\n", err)
 		os.Exit(1)
 	}
+
+	marshaler := &jsonpb.Marshaler{EmitDefaults: true}
 
 	log.Info("monitoring telemetry")
 	for {
 		ev, err := stream.Recv()
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Recv: %s\n", err)
+			fmt.Fprintf(os.Stderr, "error recieving event: %s\n", err)
 			os.Exit(1)
 		}
 
 		for _, e := range ev.Events {
-			evnt := telemetryToFields(e)
+			var b bytes.Buffer
+			err := marshaler.Marshal(&b, e)
+			if err != nil {
+				fmt.Fprintf(os.Stderr,
+					"unable to decode event: %v", err)
+				continue
+			}
+
+			var evnt map[string]interface{}
+			json.Unmarshal(b.Bytes(), &evnt)
 			log.WithFields(evnt).Info()
 		}
 	}
-}
-
-func telemetryToFields(e *api.ReceivedTelemetryEvent) (fields log.Fields) {
-	tmp, _ := json.Marshal(e.GetEvent())
-	var evnt map[string]interface{}
-	json.Unmarshal(tmp, &evnt)
-	fields = evnt
-	return
 }

@@ -2,6 +2,7 @@
 
 
 [[projects]]
+  branch = "mounts-176"
   name = "github.com/capsule8/capsule8"
   packages = [
     "api/v0",
@@ -13,9 +14,8 @@
     "pkg/sys/perf",
     "pkg/sys/proc"
   ]
-  revision = "55727482015d47bc044855bcc91123e0cbbe6289"
+  revision = "892d99e3cbee243250c3347538ecdc94fc9fa0e6"
   source = "https://github.com/dustin-decker/capsule8.git"
-  version = "v0.9.0-alpha"
 
 [[projects]]
   name = "github.com/coreos/go-systemd"
@@ -186,6 +186,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "e2f9e4ad60af12ebbce9f6c9e909a616d1d2ae506107ee102581d3a46db2469f"
+  inputs-digest = "ee5af48bbb17a3d5f1e7957e434cc0141cd27a7cfef34e1f0f1032ad0f933082"
   solver-name = "gps-cdcl"
   solver-version = 1

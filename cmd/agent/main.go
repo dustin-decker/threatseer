@@ -13,12 +13,12 @@ import (
 func main() {
 	config := configs.Config{
 		ContainerEvents:  true,
-		SystemdEvents:    false,
+		SystemdEvents:    true,
 		CacheMissEvents:  true,
-		ProcessEvents:    false,
-		NetworkEvents:    false,
+		ProcessEvents:    true,
+		NetworkEvents:    true,
 		SyscallEvents:    false,
-		KernelCallEvents: false,
+		KernelCallEvents: true,
 		FileEvents:       true,
 		FilePatterns: []string{
 			"/etc/shadow",
