@@ -118,7 +118,7 @@ func createSubscription(srv *Server) *api.Subscription {
 
 	containerEvents := []*api.ContainerEventFilter{
 		//
-		// Get all container lifecycle events
+		// Get container lifecycle events
 		//
 		&api.ContainerEventFilter{
 			Type: api.ContainerEventType_CONTAINER_EVENT_TYPE_CREATED,
@@ -131,6 +131,9 @@ func createSubscription(srv *Server) *api.Subscription {
 		},
 		&api.ContainerEventFilter{
 			Type: api.ContainerEventType_CONTAINER_EVENT_TYPE_DESTROYED,
+		},
+		&api.ContainerEventFilter{
+			Type: api.ContainerEventType_CONTAINER_EVENT_TYPE_UPDATED,
 		},
 	}
 
