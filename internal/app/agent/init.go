@@ -28,6 +28,24 @@ func NewAgentServer(conf configs.Config) *Server {
 		log.Fatal("couldn't get hostname: ", err)
 	}
 
+	// increase tracing buffer size
+	// ref https://lwn.net/Articles/322731/
+	tracer, err := os.OpenFile("/sys/kernel/debug/tracing/current_tracer", os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+	if err == nil {
+		_, err = tracer.WriteString("nop")
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	// unit is KB, and is per CPU core
+	bufSize, err := os.OpenFile("/sys/kernel/debug/tracing/buffer_size_kb", os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+	if err == nil {
+		_, err = bufSize.WriteString("5120")
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
 	// Exit cleanly on Control-C
 	signals := make(chan os.Signal)
 	signal.Notify(signals, os.Interrupt)
