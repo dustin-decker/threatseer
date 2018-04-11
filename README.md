@@ -27,10 +27,12 @@ At a high level this project provides:
 
 TODO:
 
-- SOON: templates for actions under conditions
-- SOON: a Kubernetes daemon to take action under conditions (bouncer)
-- SOON: Kubernetes, Swarm, and local deployments
-- SOON: Prometheus exporter integration
+- templates for actions under conditions
+- a Kubernetes daemon to take action under conditions (bouncer)
+- Kubernetes, Swarm, and local deployments
+- Prometheus exporter integration
+- add demo ELK stack
+- add some basic analytic capabilities
 
 ## build and run
 
