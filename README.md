@@ -21,6 +21,7 @@ At a high level this project provides:
   - container lifecycle
   - processes touching sensitive data
   - fork, exec, and other risky syscalls
+  - network events
   - systemd unit changes
 - low resource cost: ~3% of one CPU core, ~20MiB RAM
 - ~15mb statically compiled binary deployable
