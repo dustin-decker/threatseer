@@ -1,2 +1,8 @@
-vendor/
-bin/
+vendor
+bin/agent
+bin/client
+bin/server
+TODO.md
+server/beat.go
+server/query_stream_test.go
+config/config.go

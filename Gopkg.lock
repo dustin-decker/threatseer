@@ -2,7 +2,6 @@
 
 
 [[projects]]
-  branch = "mounts-176"
   name = "github.com/capsule8/capsule8"
   packages = [
     "api/v0",
@@ -14,14 +13,26 @@
     "pkg/sys/perf",
     "pkg/sys/proc"
   ]
-  revision = "892d99e3cbee243250c3347538ecdc94fc9fa0e6"
-  source = "https://github.com/dustin-decker/capsule8.git"
+  revision = "8ed7e33df44dfec6b44cdde13657afcd207dbd1f"
+  version = "v0.12.0-alpha"
 
 [[projects]]
-  name = "github.com/coreos/go-systemd"
-  packages = ["dbus"]
-  revision = "40e2722dffead74698ca12a750f64ef313ddce05"
-  version = "v16"
+  branch = "master"
+  name = "github.com/elgs/gojq"
+  packages = ["."]
+  revision = "81fa9a608a130323eaf4b4fc00224f7a467ffbd1"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/elgs/gosplitargs"
+  packages = ["."]
+  revision = "a491c5eeb3c841d55913cf4888f5c957be4c598d"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/elgs/jsonql"
+  packages = ["."]
+  revision = "10c218042b574dc31d6ce2e6af8f1b5106683047"
 
 [[projects]]
   name = "github.com/gobwas/glob"
@@ -37,12 +48,6 @@
   ]
   revision = "5ccd90ef52e1e632236f7326478d4faa74f99438"
   version = "v0.2.3"
-
-[[projects]]
-  name = "github.com/godbus/dbus"
-  packages = ["."]
-  revision = "a389bdde4dd695d414e47b755e95e72b7826432c"
-  version = "v4.1.0"
 
 [[projects]]
   branch = "master"
@@ -63,8 +68,8 @@
     "ptypes/timestamp",
     "ptypes/wrappers"
   ]
-  revision = "925541529c1fa6821df4e44ce2723319eb2be768"
-  version = "v1.0.0"
+  revision = "b4deda0973fb4c70b50d226b1af49f3da59f5265"
+  version = "v1.1.0"
 
 [[projects]]
   name = "github.com/grpc-ecosystem/grpc-gateway"
@@ -77,51 +82,30 @@
   version = "v1.3.1"
 
 [[projects]]
-  name = "github.com/jpillora/backoff"
-  packages = ["."]
-  revision = "8eab2debe79d12b7bd3d10653910df25fa9552ba"
-  version = "1.0.0"
-
-[[projects]]
   name = "github.com/kelseyhightower/envconfig"
   packages = ["."]
   revision = "f611eb38b3875cc3bd991ca91c51d06446afa14c"
   version = "v1.3.0"
 
 [[projects]]
-  name = "github.com/sirupsen/logrus"
-  packages = ["."]
-  revision = "c155da19408a8799da419ed3eeb0cb5db0ad5dbc"
-  version = "v1.0.5"
-
-[[projects]]
-  branch = "master"
-  name = "golang.org/x/crypto"
-  packages = ["ssh/terminal"]
-  revision = "88942b9c40a4c9d203b82b3731787b672d6e809b"
-
-[[projects]]
   branch = "master"
   name = "golang.org/x/net"
   packages = [
     "context",
+    "http/httpguts",
     "http2",
     "http2/hpack",
     "idna",
     "internal/timeseries",
-    "lex/httplex",
     "trace"
   ]
-  revision = "6078986fec03a1dcc236c34816c71b0e05018fda"
+  revision = "2491c5de3490fced2f6cff376127c667efeed857"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
-  packages = [
-    "unix",
-    "windows"
-  ]
-  revision = "91ee8cde435411ca3f1cd365e8f20131aed4d0a1"
+  packages = ["unix"]
+  revision = "7c87d13f8e835d2fb3a70a2912c811ed0c1d241b"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -152,7 +136,7 @@
     "googleapis/rpc/code",
     "googleapis/rpc/status"
   ]
-  revision = "ab0870e398d5dd054b868c0db1481ab029b9a9f2"
+  revision = "86e600f69ee4704c6efbf6a2a40a5c10700e76c2"
 
 [[projects]]
   name = "google.golang.org/grpc"
@@ -165,6 +149,7 @@
     "connectivity",
     "credentials",
     "encoding",
+    "encoding/proto",
     "grpclb/grpc_lb_v1/messages",
     "grpclog",
     "internal",
@@ -180,12 +165,12 @@
     "tap",
     "transport"
   ]
-  revision = "6b51017f791ae1cfbec89c52efdf444b13b550ef"
-  version = "v1.9.2"
+  revision = "d89cded64628466c4ab532d1f0ba5c220459ebe8"
+  version = "v1.11.2"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "ee5af48bbb17a3d5f1e7957e434cc0141cd27a7cfef34e1f0f1032ad0f933082"
+  inputs-digest = "dea70693c4b86bf26a457145efe13a06583312211d00c2e21f93413f033693b6"
   solver-name = "gps-cdcl"
   solver-version = 1
