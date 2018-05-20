@@ -8,8 +8,8 @@ import (
 )
 
 func (engine *DynamicRulesEngine) OnIn(e event.Event) {
-	log.Print(e)
-	engine.Out <- e
+	log.Print(e.Event)
+	// engine.Out <- e
 }
 
 type DynamicRulesEngine struct {

@@ -17,10 +17,12 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"log"
 	"net"
 	"os"
 	"os/signal"
+	"runtime"
 	"time"
 
 	api "github.com/capsule8/capsule8/api/v0"
@@ -177,6 +179,22 @@ func main() {
 
 	log.Println("waiting for incoming TCP connections...")
 
+	go func() {
+		for {
+			var m runtime.MemStats
+			runtime.ReadMemStats(&m)
+			log.Print(map[string]string{
+				"alloc":              fmt.Sprintf("%v", m.Alloc),
+				"total-alloc":        fmt.Sprintf("%v", m.TotalAlloc/1024),
+				"sys":                fmt.Sprintf("%v", m.Sys/1024),
+				"num-gc":             fmt.Sprintf("%v", m.NumGC),
+				"goroutines":         fmt.Sprintf("%v", runtime.NumGoroutine()),
+				"stop-pause-nanosec": fmt.Sprintf("%v", m.PauseTotalNs),
+			})
+			time.Sleep(10 * time.Second)
+		}
+	}()
+
 	for {
 		// Accept blocks until there is an incoming TCP connection
 		incomingConn, connErr := ln.Accept()
@@ -232,7 +250,7 @@ func handleConn(conn *grpc.ClientConn, eventChan chan event.Event) {
 
 		for _, e := range ev.Events {
 			// send the event down the pipeline
-			eventChan <- event.Event{Event: e, Score: map[string]int{}}
+			eventChan <- event.Event{Event: e.GetEvent(), Score: map[string]int{}}
 		}
 	}
 }

@@ -5,6 +5,6 @@ import (
 )
 
 type Event struct {
-	Event *api.ReceivedTelemetryEvent
+	Event *api.TelemetryEvent
 	Score map[string]int
 }
