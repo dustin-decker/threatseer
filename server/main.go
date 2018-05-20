@@ -17,7 +17,6 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 	"log"
 	"net"
 	"os"
@@ -26,8 +25,11 @@ import (
 
 	api "github.com/capsule8/capsule8/api/v0"
 	"github.com/capsule8/capsule8/pkg/expression"
-	"github.com/golang/protobuf/jsonpb"
+	"github.com/dustin-decker/threatseer/server/event"
+	"github.com/dustin-decker/threatseer/server/pipeline"
 	"github.com/golang/protobuf/ptypes/wrappers"
+	flow "github.com/trustmaster/goflow"
+
 	"google.golang.org/grpc"
 )
 
@@ -160,6 +162,19 @@ func main() {
 	}
 	defer ln.Close()
 
+	log.Println("starting engine pipeline...")
+	// create the network
+	n := pipeline.NewPipelineFlow()
+	// we need a channel to talk to it
+	eventChan := make(chan event.Event)
+	n.SetInPort("In", eventChan)
+	// run the pipeline network
+	flow.RunNet(n)
+	// close the input to shut the network down
+	defer close(eventChan)
+	// // wait until the app has done its job
+	// <-net.Wait()
+
 	log.Println("waiting for incoming TCP connections...")
 
 	for {
@@ -179,13 +194,12 @@ func main() {
 		}
 
 		// handle connection in goroutine so we can accept new TCP connections
-		go handleConn(conn)
+		go handleConn(conn, eventChan)
 	}
 }
 
-func handleConn(conn *grpc.ClientConn) {
+func handleConn(conn *grpc.ClientConn, eventChan chan event.Event) {
 	defer conn.Close()
-	var marshaler *jsonpb.Marshaler
 
 	ctx, cancel := context.WithCancel(context.Background())
 
@@ -209,10 +223,6 @@ func handleConn(conn *grpc.ClientConn) {
 		return
 	}
 
-	marshaler = &jsonpb.Marshaler{EmitDefaults: true}
-
-	marshaler.Indent = "\t"
-
 	for {
 		ev, err := stream.Recv()
 		if err != nil {
@@ -221,12 +231,8 @@ func handleConn(conn *grpc.ClientConn) {
 		}
 
 		for _, e := range ev.Events {
-			msg, err := marshaler.MarshalToString(e.Event)
-			if err != nil {
-				log.Println("unable to decode event: ", err)
-				continue
-			}
-			fmt.Println(msg)
+			// send the event down the pipeline
+			eventChan <- event.Event{Event: e, Score: map[string]int{}}
 		}
 	}
 }
