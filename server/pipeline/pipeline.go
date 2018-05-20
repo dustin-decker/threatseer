@@ -19,10 +19,10 @@ func NewPipelineFlow() *pipelineFlow {
 	goroutinesPerEngine := uint8(runtime.NumCPU())
 
 	// add engines to the network
-	se := new(static.StaticRulesEngine)
+	se := static.NewStaticRulesEngine()
 	se.Component.Mode = flow.ComponentModePool
 	se.Component.PoolSize = goroutinesPerEngine
-	n.Add(se, "StaticRulesEngine")
+	n.Add(&se, "StaticRulesEngine")
 	de := new(dynamic.DynamicRulesEngine)
 	de.Component.Mode = flow.ComponentModePool
 	de.Component.PoolSize = goroutinesPerEngine
