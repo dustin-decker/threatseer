@@ -212,7 +212,7 @@ func main() {
 		}
 
 		// handle connection in goroutine so we can accept new TCP connections
-		go handleConn(conn, eventChan, ln.Addr())
+		go handleConn(conn, eventChan, incomingConn.RemoteAddr())
 	}
 }
 
