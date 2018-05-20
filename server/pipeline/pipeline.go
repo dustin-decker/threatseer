@@ -16,14 +16,16 @@ func NewPipelineFlow() *pipelineFlow {
 	n := new(pipelineFlow)
 	n.InitGraphState()
 
+	goroutinesPerEngine := uint8(runtime.NumCPU())
+
 	// add engines to the network
 	se := new(static.StaticRulesEngine)
 	se.Component.Mode = flow.ComponentModePool
-	se.Component.PoolSize = runtime.NumCPU()
+	se.Component.PoolSize = goroutinesPerEngine
 	n.Add(se, "StaticRulesEngine")
 	de := new(dynamic.DynamicRulesEngine)
 	de.Component.Mode = flow.ComponentModePool
-	de.Component.PoolSize = runtime.NumCPU()
+	de.Component.PoolSize = goroutinesPerEngine
 	n.Add(de, "DynamicRulesEngine")
 	// connect them with a channel
 	n.Connect("StaticRulesEngine", "Out", "DynamicRulesEngine", "In")

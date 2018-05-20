@@ -1,7 +1,6 @@
 package static
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/dustin-decker/threatseer/server/event"
@@ -9,8 +8,7 @@ import (
 )
 
 func (engine *StaticRulesEngine) OnIn(e event.Event) {
-	msg := fmt.Sprintf("Got event on static engine!")
-	log.Print(msg)
+	log.Print(e.Event)
 	engine.Out <- e
 }
 

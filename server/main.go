@@ -42,15 +42,15 @@ func createSubscription() *api.Subscription {
 		//
 		// Get all process lifecycle events
 		//
-		&api.ProcessEventFilter{
-			Type: api.ProcessEventType_PROCESS_EVENT_TYPE_FORK,
-		},
+		// &api.ProcessEventFilter{
+		// 	Type: api.ProcessEventType_PROCESS_EVENT_TYPE_FORK,
+		// },
 		&api.ProcessEventFilter{
 			Type: api.ProcessEventType_PROCESS_EVENT_TYPE_EXEC,
 		},
-		&api.ProcessEventFilter{
-			Type: api.ProcessEventType_PROCESS_EVENT_TYPE_EXIT,
-		},
+		// &api.ProcessEventFilter{
+		// 	Type: api.ProcessEventType_PROCESS_EVENT_TYPE_EXIT,
+		// },
 	}
 
 	syscallEvents := []*api.SyscallEventFilter{
@@ -120,9 +120,9 @@ func createSubscription() *api.Subscription {
 
 	// Ticker events are used for debugging and performance testing
 	tickerEvents := []*api.TickerEventFilter{
-		&api.TickerEventFilter{
-			Interval: int64(1 * time.Second),
-		},
+		// &api.TickerEventFilter{
+		// 	Interval: int64(1 * time.Second),
+		// },
 	}
 
 	chargenEvents := []*api.ChargenEventFilter{
@@ -212,11 +212,11 @@ func main() {
 		}
 
 		// handle connection in goroutine so we can accept new TCP connections
-		go handleConn(conn, eventChan)
+		go handleConn(conn, eventChan, ln.Addr())
 	}
 }
 
-func handleConn(conn *grpc.ClientConn, eventChan chan event.Event) {
+func handleConn(conn *grpc.ClientConn, eventChan chan event.Event, clientAddr net.Addr) {
 	defer conn.Close()
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -250,7 +250,11 @@ func handleConn(conn *grpc.ClientConn, eventChan chan event.Event) {
 
 		for _, e := range ev.Events {
 			// send the event down the pipeline
-			eventChan <- event.Event{Event: e.GetEvent(), Score: map[string]int{}}
+			eventChan <- event.Event{
+				Event:      e.GetEvent(),
+				Score:      map[string]int{},
+				ClientAddr: clientAddr,
+			}
 		}
 	}
 }
