@@ -24,6 +24,10 @@ The server component uses several analysis engines, and has raw telemetry output
 - File
 - Stdout
 
+<p align="center">
+  <img src="docs/images/global_coverage.svg" width="100%"/>
+</p>
+
 ## Example telemetry
 
 ### container exec
