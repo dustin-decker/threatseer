@@ -68,7 +68,7 @@ successful blind remote code execution callback
 The server's analysis engines each contribute a risk score to an event as it flows through the pipeline. Actions can be taken depending on the overall score.
 
 <p align="center">
-  <img src="docs/images/engine_pipeline.png" width="100%"/>
+  <img src="docs/images/engine_pipeline.jpg" width="100%"/>
 </p>
 
 ### Static Rules Engine
