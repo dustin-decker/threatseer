@@ -25,7 +25,7 @@ The server component uses several analysis engines, and has raw telemetry output
 - Stdout
 
 <p align="center">
-  <img src="docs/images/global_coverage.svg" width="100%"/>
+  <img src="docs/images/global_coverage.svg" width="50%"/>
 </p>
 
 ## Example telemetry
