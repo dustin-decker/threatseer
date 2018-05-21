@@ -4,45 +4,26 @@ import (
 	"runtime"
 
 	"github.com/dustin-decker/threatseer/server/engines/dynamic"
+	"github.com/dustin-decker/threatseer/server/engines/shipper"
 	"github.com/dustin-decker/threatseer/server/engines/static"
-	"github.com/dustin-decker/threatseer/server/shipper"
-	flow "github.com/trustmaster/goflow"
+	"github.com/dustin-decker/threatseer/server/event"
 )
 
-type pipelineFlow struct {
-	flow.Graph
-}
+// NewPipelineFlow wires up the engine pipeline network
+func NewPipelineFlow(in chan event.Event) {
 
-func NewPipelineFlow() *pipelineFlow {
-	n := new(pipelineFlow)
-	n.InitGraphState()
-
-	goroutinesPerEngine := uint8(runtime.NumCPU())
-
-	// add engines to the network
 	se := static.NewStaticRulesEngine()
-	se.Component.Mode = flow.ComponentModePool
-	se.Component.PoolSize = goroutinesPerEngine
-	n.Add(&se, "StaticRulesEngine")
-	de := new(dynamic.DynamicRulesEngine)
-	de.Component.Mode = flow.ComponentModePool
-	de.Component.PoolSize = goroutinesPerEngine
-	n.Add(de, "DynamicRulesEngine")
-	// connect them with a channel
-	n.Connect("StaticRulesEngine", "Out", "DynamicRulesEngine", "In")
+	de := dynamic.NewDynamicRulesEngine()
+	bt := shipper.NewShipperEngine()
 
-	bt := shipper.Start()
-	bt.Component.Mode = flow.ComponentModePool
-	bt.Component.PoolSize = goroutinesPerEngine
-	n.Add(bt, "ThreatseerBeat")
-	n.Connect("DynamicRulesEngine", "Out", "ThreatseerBeat", "In")
+	numPipelines := runtime.NumCPU()
 
-	// err := beat.Run("threatseer", "", shipper.NewShipper)
-	// if err != nil {
-	// 	log.Fatal("could not start shipper, got: ", err)
-	// }
+	for w := 0; w <= numPipelines; w++ {
+		// add engines to the network
+		go se.Run(in)
 
-	// our net has 1 inport mapped to StaticRulesEngine.In
-	n.MapInPort("In", "StaticRulesEngine", "In")
-	return n
+		go de.Run(se.Out)
+
+		go bt.Start(de.Out)
+	}
 }

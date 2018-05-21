@@ -2,7 +2,9 @@ vendor
 bin/agent
 bin/client
 bin/server
+bin/data
 TODO.md
 server/beat.go
 server/query_stream_test.go
 config/config.go
+bin/logs/threatseer

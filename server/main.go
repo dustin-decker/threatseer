@@ -30,7 +30,6 @@ import (
 	"github.com/dustin-decker/threatseer/server/event"
 	"github.com/dustin-decker/threatseer/server/pipeline"
 	"github.com/golang/protobuf/ptypes/wrappers"
-	flow "github.com/trustmaster/goflow"
 
 	"google.golang.org/grpc"
 )
@@ -166,16 +165,8 @@ func main() {
 
 	log.Println("starting engine pipeline...")
 	// create the network
-	n := pipeline.NewPipelineFlow()
-	// we need a channel to talk to it
 	eventChan := make(chan event.Event)
-	n.SetInPort("In", eventChan)
-	// run the pipeline network
-	flow.RunNet(n)
-	// close the input to shut the network down
-	defer close(eventChan)
-	// // wait until the app has done its job
-	// <-net.Wait()
+	pipeline.NewPipelineFlow(eventChan)
 
 	log.Println("waiting for incoming TCP connections...")
 

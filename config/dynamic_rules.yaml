@@ -1,0 +1,7 @@
+---
+- description: fetching external resources
+  event_type: PROCESS_EVENT_TYPE_EXEC
+  actions:
+    - alert
+  score: 60
+  query: 'exec_filename ~= (wget || curl)'

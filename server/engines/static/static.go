@@ -8,29 +8,31 @@ import (
 	"gopkg.in/yaml.v2"
 
 	"github.com/dustin-decker/threatseer/server/event"
-	flow "github.com/trustmaster/goflow"
 )
 
 type StaticRulesEngine struct {
-	flow.Component
-	In             <-chan event.Event
-	Out            chan<- event.Event
+	Out            chan event.Event
 	riskyProcesses []riskyProcess
 }
 
-func (engine *StaticRulesEngine) OnIn(e event.Event) {
-	processInfo := e.Event.GetProcess()
+// Run initiates the engine on the pipeline
+func (engine *StaticRulesEngine) Run(in chan event.Event) {
+	for {
+		e := <-in
 
-	if processInfo != nil {
-		// check for risky processes
-		rp := engine.checkRiskyProcess(processInfo)
-		if rp != nil {
-			e.Indicators = append(e.Indicators, rp.Indicator())
+		processInfo := e.Event.GetProcess()
+
+		if processInfo != nil {
+			// check for risky processes
+			rp := engine.checkRiskyProcess(processInfo)
+			if rp != nil {
+				e.Indicators = append(e.Indicators, rp.Indicator())
+			}
 		}
-	}
 
-	log.Print(e.Event)
-	engine.Out <- e
+		// log.Print(e.Event)
+		engine.Out <- e
+	}
 }
 
 // NewStaticRulesEngine returns engine with configs loaded
@@ -40,7 +42,7 @@ func NewStaticRulesEngine() StaticRulesEngine {
 	// load risky_process.yaml information
 	filename := "config/risky_processes.yaml"
 	var rp []riskyProcess
-	if _, err := os.Stat("config/risky_processes.yaml"); os.IsNotExist(err) {
+	if _, err := os.Stat(filename); os.IsNotExist(err) {
 		log.Printf("%s does not exist, not loading any data for that check", filename)
 	} else {
 		bytes, err := ioutil.ReadFile(filename)
@@ -53,6 +55,7 @@ func NewStaticRulesEngine() StaticRulesEngine {
 		}
 	}
 	e.riskyProcesses = rp
+	e.Out = make(chan event.Event, 0)
 
 	return e
 }
