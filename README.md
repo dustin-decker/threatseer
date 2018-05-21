@@ -108,6 +108,14 @@ Machine learning prediction model trained on two sets of labeled data:
 Takes action depending on final pipeline score. 
 Actions are `toss`, `log`, `alert`, and `kill`. (todo)
 
+## Docs
+
+Docs are sparse at the moment. Threatseer is still under heavy development.
+
+### [HACKING.md](HACKING.md)
+### [CONFIGURING.md](CONFIGURING.md)
+
+
 ## Roadmap
 
 - Add Profile Engine
