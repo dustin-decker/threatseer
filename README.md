@@ -67,6 +67,10 @@ successful blind remote code execution callback
 
 The server's analysis engines each contribute a risk score to an event as it flows through the pipeline. Actions can be taken depending on the overall score.
 
+<p align="center">
+  <img src="docs/images/engine_pipeline.png" width="100%"/>
+</p>
+
 ### Static Rules Engine
 
 The Static Rules Engine has hard-coded, high performance checks. Currently it checks for known risky processes that are often triggered during RCE attempts.
