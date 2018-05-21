@@ -11,7 +11,7 @@ A lightweight linux endpoint security solution
 
 ## What is it?
 
-Threatseer is an lightweight agent-based security solution for Linux.
+Threatseer is an lightweight agent-based security solution for Linux, and can be deployed to datacenters, clouds, orchestrators, and workstations.
 
 The agent collects security telemetry which is offloaded to a server for analysis.
 
