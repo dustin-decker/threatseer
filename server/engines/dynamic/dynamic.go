@@ -7,7 +7,7 @@ import (
 
 func (engine *DynamicRulesEngine) OnIn(e event.Event) {
 	// log.Print(e.Event)
-	// engine.Out <- e
+	engine.Out <- e
 }
 
 type DynamicRulesEngine struct {
