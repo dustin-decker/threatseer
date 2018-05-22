@@ -1,9 +1,8 @@
 # Threatseer Architecture
 
 <p align="center">
-  <img src="docs/images/architecture.png" width="100%"/>
+  <img src="docs/images/components.svg" width="100%"/>
 </p>
-
 
 ## Analysis engines
 
