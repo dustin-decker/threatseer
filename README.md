@@ -85,7 +85,7 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for more info.
 
 Docs are sparse at the moment. Threatseer is still under heavy development.
 
-### [docs/RUN_IT.md](doc/RUN_IT.md)
+### [docs/RUN_IT.md](docs/RUN_IT.md)
 ### [docs/HACKING.md](docs/HACKING.md)
 ### [docs/CONFIGURING.md](docs/CONFIGURING.md)
 
