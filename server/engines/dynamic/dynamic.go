@@ -10,11 +10,11 @@ import (
 )
 
 type dynamicRule struct {
-	eventType   string
-	description string
-	actions     []string
-	query       string
-	score       int
+	eventType   string   `yaml:"event_type"`
+	description string   `yaml:"description"`
+	actions     []string `yaml:"actions"`
+	query       string   `yaml:"query"`
+	score       int      `yaml:"score"`
 }
 
 type DynamicRulesEngine struct {

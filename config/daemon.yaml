@@ -1,0 +1,6 @@
+---
+# Number of pipelines defaults to the number of CPUs available to the server.
+#
+# number_of_pipelines: 4
+
+listen_address: 0.0.0.0:8081
