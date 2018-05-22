@@ -112,8 +112,8 @@ Actions are `toss`, `log`, `alert`, and `kill`. (todo)
 
 Docs are sparse at the moment. Threatseer is still under heavy development.
 
-### [HACKING.md](HACKING.md)
-### [CONFIGURING.md](CONFIGURING.md)
+### [HACKING.md](docs/HACKING.md)
+### [CONFIGURING.md](docs/CONFIGURING.md)
 
 
 ## Roadmap

@@ -7,8 +7,7 @@ Nothing required except server endpoint (currently hardcoded to localhost)
 # server
 
 ## Logging
-
-Configure `beats.yml` per [the docs](https://www.elastic.co/guide/en/beats/filebeat/current/configuring-output.html) or the documentation in the file.
+Configure [`beats.yml`](/beats.yml) per [the docs](https://www.elastic.co/guide/en/beats/filebeat/current/configuring-output.html) or the documentation in [the file](/beats.yml).
 
 ## Analysis Engines
 
