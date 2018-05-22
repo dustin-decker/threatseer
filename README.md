@@ -13,9 +13,21 @@ A lightweight linux endpoint security solution
 
 Threatseer is an lightweight agent-based security solution for Linux, and can be deployed to datacenters, clouds, orchestrators, and workstations.
 
+### Agent features
+
 The agent collects security telemetry which is offloaded to a server for analysis.
 
-The server component uses several analysis engines, and has JSON telemetry output methods available, provided by [libbeat](https://www.elastic.co/products/beats):
+- event-driven structured data of important system events
+  - container lifecycle
+  - processes touching sensitive data
+  - processes spawned and lifecycle events
+  - network events
+- low resource cost: ~3% of one CPU core, ~20MiB RAM
+- ~15mb statically compiled binary deployable
+
+### Server features
+
+The server component uses several behavioral analysis engines for scoring events and has JSON telemetry output methods available, provided by [libbeat](https://www.elastic.co/products/beats):
 
 - Elasticsearch
 - Kafka
