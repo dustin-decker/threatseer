@@ -243,7 +243,7 @@ func handleConn(conn *grpc.ClientConn, eventChan chan event.Event, clientAddr ne
 			// send the event down the pipeline
 			eventChan <- event.Event{
 				Event:      e.GetEvent(),
-				Indicators: make([]event.Indicator, 1),
+				Indicators: make([]event.Indicator, 0),
 				ClientAddr: clientAddr,
 			}
 		}
