@@ -28,10 +28,16 @@ Major distribution versions with recommended requirements:
 
 ### Resource Requirements
 
-- Typically less than ~0.3% of one CPU
+- Typically less than ~1% of one CPU
 - ~30 MB RAM
 - ~5 MB disk space
 
 ## Server
 
-TBD
+Server resource consumption depends on how many agents are connected and how much telemetry the agents are pushing.
+This will likely change over time as more behavioral analysis engines and rules are added.
+Resource consumption starting from:
+
+- Typically less than ~1% of one CPU
+- ~7 MB RAM
+- ~5 MB disk space
