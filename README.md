@@ -22,12 +22,12 @@ The agent collects security telemetry which is offloaded to a server for analysi
   - processes touching sensitive data
   - processes spawned and lifecycle events
   - network events
-- low resource cost: ~3% of one CPU core, ~20MiB RAM
-- ~15mb statically compiled binary deployable
+- low resource cost: typically less than ~3% of one CPU core, ~30MiB RAM
+- ~5mb statically compiled binary deployable
 
 ### Server features
 
-The server component uses several behavioral analysis engines for scoring events and has JSON telemetry output methods available, provided by [libbeat](https://www.elastic.co/products/beats):
+The server component uses several behavioral analysis engines for scoring events and has several JSON telemetry output methods available, provided by [libbeat](https://www.elastic.co/products/beats):
 
 - Elasticsearch
 - Kafka
@@ -42,7 +42,7 @@ The server component uses several behavioral analysis engines for scoring events
 
 ## Example telemetry
 
-### Container Exec: RCE
+### container RCE event
 
 successful blind remote code execution (RCE) callback
 
