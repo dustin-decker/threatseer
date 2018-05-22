@@ -4,7 +4,7 @@ The easiest way to get started is to run the `agent` and `server` Docker images.
 
 ## Running the agent
 
-The agent must run as a priviledged container and with the mounts so it can collect telemtry from the kernel and filesystem.
+The agent must run as a priviledged container and with the mounts so it can collect telemetry from the kernel and filesystem.
 
 ```bash
 docker run \
@@ -18,7 +18,7 @@ docker run \
     -v /sys/fs/cgroup:/sys/fs/cgroup \
     -v /var/lib/docker:/var/lib/docker:ro \
     -v /var/run/docker:/var/run/docker:ro \
-    dustindecker/threatseer-agent
+    dustindecker/threatseer:agent
 ```
 
 ## Running the agent
@@ -29,5 +29,5 @@ docker run \
     --rm \
     -it \
     --net=host \
-    dustindecker/threatseer-server
+    dustindecker/threatseer:server
 ```
