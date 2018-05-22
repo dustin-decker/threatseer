@@ -128,6 +128,7 @@ func waitForSensor() {
 
 func main() {
 	flag.Parse()
+	flag.Lookup("logtostderr").Value.Set("true") // disable logging to file
 
 	log.Print("starting threatseer agent")
 

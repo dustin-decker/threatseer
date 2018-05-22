@@ -26,7 +26,7 @@ run-agent: ## run the agent docker image
 		-v /var/run/docker:/var/run/docker:ro \
 		dustindecker/threatseer-agent
 
-run-agent: ## run the server docker image
+run-server: ## run the server docker image
 	docker run \
 		--name threatseer-server \
 		--rm \
