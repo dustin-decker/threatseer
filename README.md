@@ -112,15 +112,18 @@ Actions are `toss`, `log`, `alert`, and `kill`. (todo)
 
 Docs are sparse at the moment. Threatseer is still under heavy development.
 
-### [HACKING.md](docs/HACKING.md)
-### [CONFIGURING.md](docs/CONFIGURING.md)
+### [docs/RUN_IT.md](doc/RUN_IT.md)
+### [docs/HACKING.md](docs/HACKING.md)
+### [docs/CONFIGURING.md](docs/CONFIGURING.md)
 
 
 ## Roadmap
 
+- mutual TLS and automation for minting keys and certs
 - Add Profile Engine
 - Implement actions (for agent and server)
 - WebUI for interaction and response with events and alerts
+- Add some deployments templates (Swarm, K8s, helm, etc)
 - Add Classification Engine
 
 ## Acknowledgements
