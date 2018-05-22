@@ -1,115 +1,40 @@
 # threatseer
 
+A lightweight linux endpoint security solution
+
 <p align="center">
-  <img src="img/gopher.svg" width="200"/>
+  <img src="docs/images/gopher.svg" width="200"/>
 </p>
 
 [![Build Status](https://travis-ci.org/dustin-decker/threatseer.svg?branch=master)](https://travis-ci.org/dustin-decker/threatseer)
 
-## what is it?
 
-Threatseer provides security related telemetry from linux servers and workstations.
-For many of the features, threatseer uses [Capsule8](https://github.com/capsule8/capsule8), which makes use of kernel tracing tooling to general events for the kernel activity you're interested in. Threatseer makes of other telemetry sources too, such as the Systemd D-Bus API.
+## What is it?
 
-It's a really young, immature project. Obviously use at your own risk, and help make it better.
+Threatseer is an lightweight agent-based security solution for Linux, and can be deployed to datacenters, clouds, orchestrators, and workstations.
 
-## features
+The agent collects security telemetry which is offloaded to a server for analysis.
 
-At a high level this project provides:
+The server component uses several analysis engines, and has raw telemetry output methods available, provided by [libbeat](https://www.elastic.co/products/beats):
 
-- event-driven structured data of important system events
-  - container lifecycle
-  - processes touching sensitive data
-  - fork, exec, and other risky syscalls
-  - network events
-  - systemd unit changes
-- low resource cost: ~3% of one CPU core, ~20MiB RAM
-- ~15mb statically compiled binary deployable
+- Elasticsearch
+- Kafka
+- Logstash
+- Redis
+- File
+- Stdout
 
-TODO:
+<p align="center">
+  <img src="docs/images/global_coverage.svg" width="50%"/>
+</p>
 
-- templates for actions under conditions
-- a Kubernetes daemon to take action under conditions (bouncer)
-- Kubernetes, Swarm, and local deployments
-- Prometheus exporter integration
-- add demo ELK stack
-- add some basic analytic capabilities
-
-## build and run
-
-### local
-
-Fetch the deps:
-
-``` bash
-dep ensure
-```
-
-Build the binary:
-
-``` bash
-CGO_ENABLED=0 go build -o bin/agent cmd/agent/main.go
-```
-
-Run the binary (pretty printed with jq):
-
-``` bash
-sudo ./bin/agent 2>&1 | jq '.'
-```
-
-### Docker
-
-Make the docker image:
-
-``` bash
-make build-agent
-```
-
-Run the image:
-
-``` bash
-docker run \
-  --privileged \
-  --name threatseer \
-  --rm \
-  -it \
-  -v /proc:/var/run/capsule8/proc/:ro \
-  -v /sys/kernel/debug:/sys/kernel/debug \
-  -v /sys/fs/cgroup:/sys/fs/cgroup \
-  -v /var/lib/docker:/var/lib/docker:ro \
-  -v /var/run/docker:/var/run/docker:ro \
-  dustindecker/threatseer
-```
-
-## getting telemetry
-
-By default events are logged to stdout as JSON blobs. An example universal container logging pipeline described below works well with this.
-
-Alternatively, you can use one of the dozens of [logging hooks](https://github.com/sirupsen/logrus#hooks), make your own logging hook, or use any [io.Writer](https://godoc.org/github.com/sirupsen/logrus#SetOutput).
-
-## example telemetry
-
-### L3 cache timing attack (could be Meltdown, Spectre, Rowhammer or others)
-
-``` json
-{
-  "pid": 9071,
-  "container_id": "ff426288ea903fcf8d91aca97460c613348f7a27195606b45f19ae91776ca23d",
-  "container_image": "centos",
-  "container_name": "/cranky_shrubbery",
-  "hostname": "victimbox1",
-  "l3_cache_miss_rate": 0.98009,
-  "level": "warning",
-  "msg": "possible Meltdown | Spectre | Rowhammer | other attack utilizing L3 cache miss timing detected",
-  "time": "2018-01-30T19:37:25-06:00"
-}
-```
+## Example telemetry
 
 ### container exec
 
 successful blind remote code execution callback
 
-``` json
+```json
 {
   "Event": {
     "Process": {
@@ -134,35 +59,34 @@ successful blind remote code execution callback
   "sensor_sequence_number": 223,
   "time": "2018-01-28T18:04:04-06:00"
 }
-
 ```
 
-## threatseer on Kubernetes
+## Architecture
 
 <p align="center">
-  <img src="img/threatseer-arch.svg" width="500"/>
+  <img src="docs/images/architecture.png" width="100%"/>
 </p>
 
-## container logging
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for more info.
 
-Universal solution. Just log json blobs to stdout. Ending with producing to Kafka.
+## Docs
 
-<p align="center">
-  <img src="img/container-logging.svg" width="500"/>
-</p>
+Docs are sparse at the moment. Threatseer is still under heavy development.
 
-## logging pipeline, continued
+### [docs/RUN_IT.md](doc/RUN_IT.md)
+### [docs/HACKING.md](docs/HACKING.md)
+### [docs/CONFIGURING.md](docs/CONFIGURING.md)
 
-Enriched, interactive investigation experience with structured data. Starting from consuming from Kafka.
 
-<p align="center">
-  <img src="img/logging-pipeline.svg" width="500"/>
-</p>
+## Roadmap
 
-## status
+- mutual TLS and automation for minting keys and certs
+- Add Profile Engine
+- Implement actions (for agent and server)
+- WebUI for interaction and response with events and alerts
+- Add some deployments templates (Swarm, K8s, helm, etc)
+- Add Classification Engine
 
-Threatseer is in a rapidly changing state so you should not count on stability or the data it outputs.
+## Acknowledgements
 
-## acknowledgements
-
-- [Capsule8](https://capsule8.com/) for their [ opensource library](https://github.com/capsule8/capsule8) that made the initial implementation possible. They're the ones doing the actual innovation and work, and it sounds like the have an [interesting product](https://capsule8.com/product/#platform) on the way based it.
+- [Capsule8](https://capsule8.com/) for their [ opensource library](https://github.com/capsule8/capsule8) that made the agent sensor implementation possible. They're the ones doing the most innovation and work, and it sounds like the have an [interesting product](https://capsule8.com/product/#platform) on the way based it.

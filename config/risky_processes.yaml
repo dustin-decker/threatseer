@@ -1,0 +1,80 @@
+---
+- name: curl
+  reason: fetch resources
+  score: 50
+
+- name: wget
+  reason: fetch resources
+  score: 50
+
+- name: nc
+  reason: reverse shell
+  score: 70
+
+- name: netcat
+  reason: reverse shell
+  score: 70
+
+- name: bash
+  reason: reverse shell / code execution
+  score: 70
+
+- name: sh
+  reason: code execution
+  score: 70
+
+- name: perl
+  reason: code execution
+  score: 70
+
+- name: python
+  reason: code execution
+  score: 70
+
+- name: python3
+  reason: code execution
+  score: 70
+
+- name: ruby
+  reason: code execution
+  score: 70
+
+- name: node
+  reason: code execution
+  score: 70
+
+- name: sudo
+  reason: escalate privileges
+  score: 30
+
+- name: vim
+  reason: shell / editing files
+  score: 40
+
+- name: vi
+  reason: shell / editing files
+  score: 40
+
+- name: emacs
+  reason: editing files
+  score: 40
+
+- name: nano
+  reason: editing files
+  score: 40
+
+- name: gcc
+  reason: compile exploits
+  score: 70
+
+- name: dig
+  reason: exfil / callback
+  score: 70
+
+- name: cat
+  reason: exfil responses
+  score: 70
+  
+- name: sleep
+  reason: blind RCE check
+  score: 70
