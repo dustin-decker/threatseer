@@ -5,3 +5,4 @@ services:
 
 script:
 - make build-agent
+- make build-server

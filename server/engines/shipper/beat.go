@@ -62,6 +62,8 @@ func NewShipperEngine() Shipper {
 	}
 }
 
+// just here to satisfty instance.Beat.Setup
+// you can load in custom configs here as usual
 func newShipper(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 	config := DefaultConfig
 	if err := cfg.Unpack(&config); err != nil {

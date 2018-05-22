@@ -7,10 +7,10 @@ help: ## this help
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 build-agent: ## build the threatseer agent
-	docker build -t dustindecker/threatseer-agent . -f build/package/Dockerfile.agent
+	docker build -t dustindecker/threatseer-agent . -f Dockerfile.agent
 
 build-server: ## build the threatseer agent
-	docker build -t dustindecker/threatseer-server . -f build/package/Dockerfile.server
+	docker build -t dustindecker/threatseer-server . -f Dockerfile.server
 
 run-agent: ## run the agent docker image
 	docker run \
