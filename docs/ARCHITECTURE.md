@@ -1,7 +1,7 @@
 # Threatseer Architecture
 
 <p align="center">
-  <img src="docs/images/components.svg" width="100%"/>
+  <img src="images/components.svg" width="100%"/>
 </p>
 
 ## Analysis engines
@@ -9,7 +9,7 @@
 The server's analysis engines each contribute a risk score to an event as it flows through the pipeline. Actions can be taken depending on the overall score.
 
 <p align="center">
-  <img src="docs/images/engine_pipeline.jpg" width="100%"/>
+  <img src="images/engine_pipeline.svg" width="100%"/>
 </p>
 
 ### Static Rules Engine
