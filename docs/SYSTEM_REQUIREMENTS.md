@@ -5,7 +5,9 @@
 The sensor requires kernel support for KProbes and Perf
 
 ### Minimum Distro/Kernel Requirements
-- Linux kernel 3.10+
+
+- Linux kernel 3.10+ 
+- x86_64 (possibly x86_32), but not ARM
 
 There are some exceptions due to maintainers backporting kernel features in some instances.
 
