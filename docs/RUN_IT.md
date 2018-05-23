@@ -18,7 +18,7 @@ docker run \
     -v /sys/fs/cgroup:/sys/fs/cgroup \
     -v /var/lib/docker:/var/lib/docker:ro \
     -v /var/run/docker:/var/run/docker:ro \
-    dustindecker/threatseer:agent
+    dustindecker/threatseer:agent-0.1.0
 ```
 
 ## Running the agent
@@ -29,5 +29,5 @@ docker run \
     --rm \
     -it \
     --net=host \
-    dustindecker/threatseer:server
+    dustindecker/threatseer:server-0.1.0
 ```
