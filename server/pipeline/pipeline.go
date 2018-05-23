@@ -10,13 +10,15 @@ import (
 )
 
 // NewPipelineFlow wires up the engine pipeline network
-func NewPipelineFlow(in chan event.Event) {
+func NewPipelineFlow(numPipelines int, in chan event.Event) {
 
 	se := static.NewStaticRulesEngine()
 	de := dynamic.NewDynamicRulesEngine()
 	bt := shipper.NewShipperEngine()
 
-	numPipelines := runtime.NumCPU()
+	if numPipelines == 0 {
+		numPipelines = runtime.NumCPU()
+	}
 
 	for w := 0; w <= numPipelines; w++ {
 		// add engines to the network

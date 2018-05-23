@@ -17,12 +17,10 @@ package daemon
 import (
 	"context"
 	"flag"
-	"fmt"
 	"log"
 	"net"
 	"os"
 	"os/signal"
-	"runtime"
 	"time"
 
 	api "github.com/capsule8/capsule8/api/v0"
@@ -58,25 +56,11 @@ func Start() {
 	log.Println("starting engine pipeline")
 	// create the network
 	eventChan := make(chan event.Event)
-	pipeline.NewPipelineFlow(eventChan)
+	pipeline.NewPipelineFlow(server.Config.NumberOfPipelines, eventChan)
 
 	log.Println("waiting for incoming TCP connections")
 
-	go func() {
-		for {
-			var m runtime.MemStats
-			runtime.ReadMemStats(&m)
-			log.Print(map[string]string{
-				"alloc":              fmt.Sprintf("%v", m.Alloc),
-				"total-alloc":        fmt.Sprintf("%v", m.TotalAlloc/1024),
-				"sys":                fmt.Sprintf("%v", m.Sys/1024),
-				"num-gc":             fmt.Sprintf("%v", m.NumGC),
-				"goroutines":         fmt.Sprintf("%v", runtime.NumGoroutine()),
-				"stop-pause-nanosec": fmt.Sprintf("%v", m.PauseTotalNs),
-			})
-			time.Sleep(10 * time.Second)
-		}
-	}()
+	go ProcessStats()
 
 	for {
 		// Accept blocks until there is an incoming TCP connection
@@ -95,11 +79,11 @@ func Start() {
 		}
 
 		// handle connection in goroutine so we can accept new TCP connections
-		go server.handleConn(conn, eventChan, incomingConn.RemoteAddr())
+		go server.handleConn(conn, eventChan, incomingConn.RemoteAddr().String())
 	}
 }
 
-func (s *Server) handleConn(conn *grpc.ClientConn, eventChan chan event.Event, clientAddr net.Addr) {
+func (s *Server) handleConn(conn *grpc.ClientConn, eventChan chan event.Event, clientAddr string) {
 	defer conn.Close()
 
 	ctx, cancel := context.WithCancel(context.Background())
