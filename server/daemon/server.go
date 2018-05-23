@@ -79,7 +79,7 @@ func Start() {
 		}
 
 		// handle connection in goroutine so we can accept new TCP connections
-		go server.handleConn(conn, eventChan, incomingConn.RemoteAddr().String())
+		go server.handleConn(conn, eventChan, incomingConn.RemoteAddr().(*net.TCPAddr).IP.String())
 	}
 }
 

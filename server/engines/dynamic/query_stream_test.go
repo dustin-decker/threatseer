@@ -31,7 +31,5 @@ func BenchmarkYQL(b *testing.B) {
 		json.Unmarshal([]byte(jsonString), &temp)
 
 		yql.Match(rawYQL, temp)
-		// result, _ := yql.Match(rawYQL, temp)
-		// fmt.Println(result)
 	}
 }

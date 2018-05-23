@@ -10,18 +10,20 @@ import (
 	"github.com/dustin-decker/threatseer/server/event"
 )
 
-type StaticRulesEngine struct {
+// RulesEngine stores engine state
+type RulesEngine struct {
 	Out            chan event.Event
 	riskyProcesses []riskyProcess
 }
 
 // Run initiates the engine on the pipeline
-func (engine *StaticRulesEngine) Run(in chan event.Event) {
+func (engine *RulesEngine) Run(in chan event.Event) {
 	for {
+		// incoming event from the pipeline
 		e := <-in
 
+		// process checks
 		processInfo := e.Event.GetProcess()
-
 		if processInfo != nil {
 			// check for risky processes
 			rp := engine.checkRiskyProcess(processInfo)
@@ -30,14 +32,14 @@ func (engine *StaticRulesEngine) Run(in chan event.Event) {
 			}
 		}
 
-		// log.Print(e.Event)
+		// make event available to the next pipeline engine
 		engine.Out <- e
 	}
 }
 
 // NewStaticRulesEngine returns engine with configs loaded
-func NewStaticRulesEngine() StaticRulesEngine {
-	var e StaticRulesEngine
+func NewStaticRulesEngine() RulesEngine {
+	var e RulesEngine
 
 	// load risky_process.yaml information
 	filename := "config/risky_processes.yaml"

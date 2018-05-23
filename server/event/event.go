@@ -1,8 +1,6 @@
 package event
 
 import (
-	"net"
-
 	api "github.com/capsule8/capsule8/api/v0"
 )
 
@@ -12,14 +10,15 @@ import (
 type Event struct {
 	Event      *api.TelemetryEvent
 	Indicators []Indicator
-	ClientAddr net.Addr
+	ClientAddr string
 }
 
 // Indicator is an individual result from an engine
 type Indicator struct {
-	Engine      string
-	Type        string
-	Description string
-	ExtraInfo   string
-	Score       int
+	Engine        string
+	RuleName      string
+	IndicatorType string
+	Description   string
+	ExtraInfo     string
+	Score         int
 }

@@ -272,6 +272,12 @@
   version = "v1.7.0"
 
 [[projects]]
+  name = "github.com/fatih/structs"
+  packages = ["."]
+  revision = "a720dfa8df582c51dee1b36feabb906bde1588bd"
+  version = "v1.0"
+
+[[projects]]
   name = "github.com/garyburd/redigo"
   packages = [
     "internal",
@@ -577,6 +583,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "f0bb90e84bd2a2adfa1b8c2256c81aa25c91c9d96e8da8010a9741be85bbdef3"
+  inputs-digest = "7d4d0d0199510c5c9f3db26ae3cda778ba96f24e09e5ecf5dfbfdb909194445e"
   solver-name = "gps-cdcl"
   solver-version = 1

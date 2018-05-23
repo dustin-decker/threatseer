@@ -1,7 +1,9 @@
 ---
-- description: fetching external resources
-  event_type: PROCESS_EVENT_TYPE_EXEC
-  actions:
+- 
+  name: insider_threat
+  description: "IT'S COMING FROM INSIDE THE HOUSE!"
+  query: ClientAddr='127.0.0.1'
+  actions: 
     - alert
+  indicator_type: custom
   score: 60
-  query: 'exec_filename ~= (wget || curl)'
