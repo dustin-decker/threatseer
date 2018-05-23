@@ -30,7 +30,7 @@ Major distribution versions with recommended requirements:
 
 - Typically less than ~1% of one CPU
 - ~30 MB RAM
-- ~5 MB disk space
+- ~15 MB disk space
 
 ## Server
 
@@ -39,5 +39,5 @@ This will likely change over time as more behavioral analysis engines and rules 
 Resource consumption starting from:
 
 - Typically less than ~1% of one CPU
-- ~7 MB RAM
-- ~5 MB disk space
+- ~10 MB RAM
+- ~30 MB disk space
