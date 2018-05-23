@@ -21,7 +21,9 @@ type Shipper struct {
 // Start is the entrypoint from the flow pipeline
 func (s *Shipper) Start(in chan event.Event) {
 	for {
+		// incoming event from the pipeline
 		e := <-in
+
 		evnt := beat.Event{
 			Timestamp: time.Now(),
 			Fields: common.MapStr{
@@ -31,10 +33,8 @@ func (s *Shipper) Start(in chan event.Event) {
 			},
 		}
 
-		log.Print("trying to publish...")
 		// goes to output
 		s.client.Publish(evnt)
-		log.Print("api", "event sent: %v", evnt)
 	}
 }
 
