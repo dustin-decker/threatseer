@@ -2,8 +2,9 @@ package shipper
 
 import (
 	"fmt"
-	"log"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/dustin-decker/threatseer/server/event"
 	"github.com/elastic/beats/libbeat/beat"
@@ -42,17 +43,17 @@ func (s *Shipper) Start(in chan event.Event) {
 func NewShipperEngine() Shipper {
 	bt, err := instance.NewBeat("threatseer", "", "")
 	if err != nil {
-		log.Fatal("could not instantiate beat, got: ", err)
+		log.WithFields(log.Fields{"err": err}).Error("could not instantiate beat")
 	}
 
 	err = bt.Setup(newShipper, false, false, false)
 	if err != nil {
-		log.Fatal("error setting up the shipper, got: ", err)
+		log.WithFields(log.Fields{"err": err}).Error("error setting up the shipper")
 	}
 
 	client, err := bt.Publisher.Connect()
 	if err != nil {
-		log.Fatal("error connecting to shipper output, got: ", err)
+		log.WithFields(log.Fields{"err": err}).Error("error connecting to shipper output")
 	}
 
 	return Shipper{
@@ -67,7 +68,7 @@ func NewShipperEngine() Shipper {
 func newShipper(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 	config := DefaultConfig
 	if err := cfg.Unpack(&config); err != nil {
-		return nil, fmt.Errorf("Error reading config file: %v", err)
+		return nil, fmt.Errorf("error reading config file: %v", err)
 	}
 
 	bt := &Shipper{}
@@ -81,7 +82,7 @@ func (s *Shipper) Run(b *beat.Beat) error {
 	for {
 		select {
 		case <-s.done:
-			log.Print("recieved done signal, shutting down event shipper")
+			log.Info("recieved done signal, shutting down event shipper")
 			return nil
 		case <-ticker.C:
 		}
@@ -93,7 +94,7 @@ func (s *Shipper) Run(b *beat.Beat) error {
 func (s *Shipper) Stop() {
 	err := s.client.Close()
 	if err != nil {
-		log.Print("stopping the beat client failed because of: ", err)
+		log.WithFields(log.Fields{"err": err}).Error("stopping beat failed")
 	}
 	close(s.done)
 }

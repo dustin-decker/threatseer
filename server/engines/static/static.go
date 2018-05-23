@@ -2,8 +2,9 @@ package static
 
 import (
 	"io/ioutil"
-	"log"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 
 	"gopkg.in/yaml.v2"
 
@@ -45,15 +46,15 @@ func NewStaticRulesEngine() RulesEngine {
 	filename := "config/risky_processes.yaml"
 	var rp []riskyProcess
 	if _, err := os.Stat(filename); os.IsNotExist(err) {
-		log.Printf("%s does not exist, not loading any data for that check", filename)
+		log.WithFields(log.Fields{"err": err}).Warnf("%s does not exist, not loading any data for that check", filename)
 	} else {
 		bytes, err := ioutil.ReadFile(filename)
 		if err != nil {
-			log.Fatalf("could not read %s, got %s", filename, err.Error())
+			log.WithFields(log.Fields{"err": err}).Errorf("could not read %s", filename)
 		}
 		err = yaml.Unmarshal(bytes, &rp)
 		if err != nil {
-			log.Fatalf("could not parse %s, got %s", filename, err.Error())
+			log.WithFields(log.Fields{"err": err}).Errorf("could not parse %s", filename)
 		}
 	}
 	e.riskyProcesses = rp

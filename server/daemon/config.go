@@ -2,8 +2,9 @@ package daemon
 
 import (
 	"io/ioutil"
-	"log"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 
 	yaml "gopkg.in/yaml.v2"
 )
@@ -20,15 +21,15 @@ func LoadConfigFromFile() Config {
 	filename := "config/daemon.yaml"
 	var c Config
 	if _, err := os.Stat(filename); os.IsNotExist(err) {
-		log.Fatalf("%s does not exist, aborting", filename)
+		log.WithFields(log.Fields{"err": err}).Errorf("%s does not exist, aborting", filename)
 	} else {
 		bytes, err := ioutil.ReadFile(filename)
 		if err != nil {
-			log.Fatalf("could not read %s, got %s", filename, err.Error())
+			log.WithFields(log.Fields{"err": err}).Errorf("could not read %s", filename)
 		}
 		err = yaml.Unmarshal(bytes, &c)
 		if err != nil {
-			log.Fatalf("could not parse %s, got %s", filename, err.Error())
+			log.WithFields(log.Fields{"err": err}).Errorf("could not parse %s", filename)
 		}
 	}
 

@@ -430,6 +430,12 @@
   version = "v1.2.0"
 
 [[projects]]
+  name = "github.com/sirupsen/logrus"
+  packages = ["."]
+  revision = "c155da19408a8799da419ed3eeb0cb5db0ad5dbc"
+  version = "v1.0.5"
+
+[[projects]]
   name = "github.com/urso/go-structform"
   packages = [
     ".",
@@ -470,7 +476,10 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/crypto"
-  packages = ["pbkdf2"]
+  packages = [
+    "pbkdf2",
+    "ssh/terminal"
+  ]
   revision = "1a580b3eff7814fc9b40602fd35256c63b50f491"
 
 [[projects]]
@@ -583,6 +592,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "7d4d0d0199510c5c9f3db26ae3cda778ba96f24e09e5ecf5dfbfdb909194445e"
+  inputs-digest = "f4f2022fd9e34a979db6249743e9c1ba0f7ba2c5f445a7425e17d0b352d3c79a"
   solver-name = "gps-cdcl"
   solver-version = 1

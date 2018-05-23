@@ -17,11 +17,12 @@ package main
 import (
 	"flag"
 	"io"
-	"log"
 	"net"
 	"os"
 	"os/signal"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/capsule8/capsule8/pkg/config"
 	"github.com/capsule8/capsule8/pkg/sensor"
@@ -39,10 +40,10 @@ func startAgent() {
 	if len(config.Sensor.ListenAddr) > 0 {
 		s, err := sensor.NewSensor()
 		if err != nil {
-			log.Fatalf("could not create sensor: %s", err.Error())
+			log.WithFields(log.Fields{"err": err}).Fatal("could not create sensor")
 		}
 		if err := s.Start(); err != nil {
-			log.Fatalf("could not start sensor: %s", err.Error())
+			log.WithFields(log.Fields{"err": err}).Fatal("could not start sensor")
 		}
 		defer s.Stop()
 		service := sensor.NewTelemetryService(s, "unix:/var/run/threatseer.sock")
@@ -76,23 +77,23 @@ func establishUplink() {
 		exit = true
 	}()
 
-	log.Print("connecting to agent")
+	log.Info("connecting to agent")
 
 	sensorConn, err := net.DialTimeout("unix", "/var/run/threatseer.sock", time.Second*5)
 	if err != nil {
-		log.Println(err)
-		log.Println("reconnecting in 5 seconds")
+		log.Error(err)
+		log.Warn("reconnecting in 5 seconds")
 		time.Sleep(5 * time.Second)
 		establishUplink()
 	}
 	defer sensorConn.Close()
-	log.Print("connecting to remote")
+	log.Info("connecting to remote")
 
 	serverConn, err := net.DialTimeout("tcp", "127.0.0.1:8081", time.Second*5)
 	if err != nil {
 		log.Println(err)
 		sensorConn.Close()
-		log.Println("reconnecting in 5 seconds")
+		log.Warn("reconnecting in 5 seconds")
 		time.Sleep(5 * time.Second)
 		establishUplink()
 	}
@@ -101,17 +102,17 @@ func establishUplink() {
 	log.Print("persisting telemetry uplink")
 	err = <-joinConn(sensorConn, serverConn)
 	if err != nil {
-		log.Println("connection error ", err)
+		log.WithFields(log.Fields{"err": err}).Error("connection error")
 	}
 	sensorConn.Close()
 	serverConn.Close()
 	if exit {
-		log.Println("shutting down")
+		log.Warn("shutting down")
 		os.Exit(0)
 	} else {
-		log.Println("connection interrupted")
+		log.Warn("connection interrupted")
 	}
-	log.Println("reconnecting in 5 seconds")
+	log.Warn("reconnecting in 5 seconds")
 	time.Sleep(5 * time.Second)
 	establishUplink()
 }
@@ -129,8 +130,9 @@ func waitForSensor() {
 func main() {
 	flag.Parse()
 	flag.Lookup("logtostderr").Value.Set("true") // disable logging to file
+	log.SetFormatter(&log.JSONFormatter{})
 
-	log.Print("starting threatseer agent")
+	log.Info("starting threatseer agent")
 
 	go startAgent()
 
@@ -138,5 +140,5 @@ func main() {
 
 	establishUplink()
 
-	log.Println("goodbye")
+	log.Warn("goodbye")
 }

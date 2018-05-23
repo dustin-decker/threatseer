@@ -17,11 +17,12 @@ package daemon
 import (
 	"context"
 	"flag"
-	"log"
 	"net"
 	"os"
 	"os/signal"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	api "github.com/capsule8/capsule8/api/v0"
 	"github.com/dustin-decker/threatseer/server/event"
@@ -38,34 +39,35 @@ type Server struct {
 // Start is the entrypoint for starting the TCP server and GRPC client
 func Start() {
 	flag.Parse()
+	log.SetFormatter(&log.JSONFormatter{})
 
 	config := LoadConfigFromFile()
 	server := Server{Config: config}
 
-	log.Println("launching tcp server")
+	log.Info("launching tcp server")
 
 	// start tcp listener on all interfaces
 	// note that each connection consumes a file descriptor
 	// you may need to increase your fd limits if you have many concurrent clients
 	ln, err := net.Listen("tcp", server.Config.ListenAddress)
 	if err != nil {
-		log.Fatalf("could not listen: %s", err)
+		log.WithFields(log.Fields{"err": err}).Fatal("could not listen")
 	}
 	defer ln.Close()
 
-	log.Println("starting engine pipeline")
+	log.Info("starting engine pipeline")
 	// create the network
 	eventChan := make(chan event.Event)
 	pipeline.NewPipelineFlow(server.Config.NumberOfPipelines, eventChan)
 
-	log.Println("waiting for incoming TCP connections")
+	log.Info("waiting for incoming TCP connections")
 
 	go ProcessStats()
 
 	for {
 		// Accept blocks until there is an incoming TCP connection
 		incomingConn, connErr := ln.Accept()
-		log.Println("starting a gRPC client over incoming TCP connection")
+		log.Info("starting a gRPC client over incoming TCP connection")
 		var conn *grpc.ClientConn
 		// gRPC dial over incoming net.Conn
 		conn, err := grpc.Dial(":7777",
@@ -75,7 +77,7 @@ func Start() {
 			}),
 		)
 		if err != nil {
-			log.Fatalf("could not connect: %s", err)
+			log.WithFields(log.Fields{"err": err}).Error("could not connect")
 		}
 
 		// handle connection in goroutine so we can accept new TCP connections
@@ -104,14 +106,14 @@ func (s *Server) handleConn(conn *grpc.ClientConn, eventChan chan event.Event, c
 	})
 
 	if err != nil {
-		log.Println("error subscribing to events: ", err)
+		log.WithFields(log.Fields{"err": err}).Error("error subscribing to events")
 		return
 	}
 
 	for {
 		ev, err := stream.Recv()
 		if err != nil {
-			log.Println("error receiving events: ", err)
+			log.WithFields(log.Fields{"err": err}).Error("error receiving events")
 			return
 		}
 

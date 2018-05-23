@@ -2,8 +2,9 @@ package dynamic
 
 import (
 	"io/ioutil"
-	"log"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/caibirdme/yql"
 	"github.com/dustin-decker/threatseer/server/event"
@@ -11,6 +12,7 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
+// DynamicRules are user defined rules loaded at run time from a yaml file
 type DynamicRules []struct {
 	Name          string   `yaml:"name"`
 	Description   string   `yaml:"description"`
@@ -41,9 +43,10 @@ func (engine *RulesEngine) Run(in chan event.Event) {
 				result, err := yql.Match(rule.Query, evnt)
 				if err != nil {
 					if err.Error() == "interface conversion: interface is nil, not antlr.ParserRuleContext" {
-						log.Print("incorrect syntax for dynamic engine rule, got: ", rule.Query)
+						log.WithFields(log.Fields{"rule": rule.Name, "query": rule.Query}).Error("incorrect syntax for dynamic engine rule")
+
 					} else {
-						log.Print("dynamic engine got error while testing rule: ", err)
+						log.WithFields(log.Fields{"err": err, "rule": rule.Name}).Error("dynamic engine got error while testing rule")
 					}
 				}
 				if result {
@@ -74,15 +77,15 @@ func NewDynamicRulesEngine() RulesEngine {
 	filename := "config/dynamic_rules.yaml"
 	var dr DynamicRules
 	if _, err := os.Stat(filename); os.IsNotExist(err) {
-		log.Printf("%s does not exist, not loading any data for that check", filename)
+		log.WithFields(log.Fields{"err": err}).Warnf("%s does not exist, not loading any data for that check", filename)
 	} else {
 		bytes, err := ioutil.ReadFile(filename)
 		if err != nil {
-			log.Fatalf("could not read %s, got %s", filename, err.Error())
+			log.WithFields(log.Fields{"err": err}).Errorf("could not read %s", filename)
 		}
 		err = yaml.Unmarshal(bytes, &dr)
 		if err != nil {
-			log.Fatalf("could not parse %s, got %s", filename, err.Error())
+			log.WithFields(log.Fields{"err": err}).Errorf("could not parse %s", filename)
 		}
 	}
 	e.DynamicRules = dr
