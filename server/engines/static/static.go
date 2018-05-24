@@ -46,15 +46,15 @@ func NewStaticRulesEngine() RulesEngine {
 	filename := "config/risky_processes.yaml"
 	var rp []riskyProcess
 	if _, err := os.Stat(filename); os.IsNotExist(err) {
-		log.WithFields(log.Fields{"err": err}).Warnf("%s does not exist, not loading any data for that check", filename)
+		log.WithFields(log.Fields{"engine": "static", "err": err, "filename": filename}).Warn("config not found, not using engine")
 	} else {
 		bytes, err := ioutil.ReadFile(filename)
 		if err != nil {
-			log.WithFields(log.Fields{"err": err}).Errorf("could not read %s", filename)
+			log.WithFields(log.Fields{"engine": "static", "err": err, "filename": filename}).Fatal("could not read")
 		}
 		err = yaml.Unmarshal(bytes, &rp)
 		if err != nil {
-			log.WithFields(log.Fields{"err": err}).Errorf("could not parse %s", filename)
+			log.WithFields(log.Fields{"engine": "static", "err": err, "filename": filename}).Fatal("could not parse")
 		}
 	}
 	e.riskyProcesses = rp

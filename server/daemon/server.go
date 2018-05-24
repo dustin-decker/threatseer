@@ -79,7 +79,9 @@ func Start() {
 	for {
 		// Accept blocks until there is an incoming TCP connection
 		incomingConn, connErr := ln.Accept()
-		log.Info("starting a gRPC client over incoming TCP connection")
+		clientAddr := incomingConn.RemoteAddr().(*net.TCPAddr).IP.String()
+
+		log.WithFields(log.Fields{"client_addr": clientAddr}).Info("connecting to gRPC sensor over incoming TCP connection")
 		var conn *grpc.ClientConn
 		// gRPC dial over incoming net.Conn
 		conn, err := grpc.Dial(":7777",
@@ -89,11 +91,11 @@ func Start() {
 			}),
 		)
 		if err != nil {
-			log.WithFields(log.Fields{"err": err}).Error("could not connect")
+			log.WithFields(log.Fields{"err": err, "client_addr": clientAddr}).Error("could not connect to sensor")
 		}
 
 		// handle connection in goroutine so we can accept new TCP connections
-		go server.handleConn(conn, eventChan, incomingConn.RemoteAddr().(*net.TCPAddr).IP.String())
+		go server.handleConn(conn, eventChan, clientAddr)
 	}
 }
 
