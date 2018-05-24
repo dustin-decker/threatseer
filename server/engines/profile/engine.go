@@ -1,6 +1,7 @@
 package profile
 
 import (
+	"sync"
 	"time"
 
 	"github.com/dustin-decker/threatseer/server/event"
@@ -18,6 +19,8 @@ type Engine struct {
 	HasBeenProfiledFilter *cf.CuckooFilter
 	// tracks when profiling started so the application can be added to the IsProfiledFilter
 	IsProfiling map[string]time.Time
+
+	Mutex *sync.Mutex
 }
 
 // Run initiates the engine on the pipeline
@@ -69,6 +72,7 @@ func NewProfileEngine() Engine {
 		// 4000 nodes * 2000 eventProfiles per node = 8000000
 		HasBeenProfiledFilter: cf.NewCuckooFilter(8000000),
 		IsProfiling:           map[string]time.Time{},
+		Mutex:                 &sync.Mutex{},
 	}
 
 	return e

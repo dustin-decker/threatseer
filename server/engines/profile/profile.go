@@ -31,9 +31,13 @@ func (e *Engine) profileExecEvent(evnt event.Event, cmd []string) int {
 	}
 
 	// if subject has not been profiled, mark it as profiling now, and insert this eventProfile
+	e.Mutex.Lock()
 	startTime, ok := e.IsProfiling[bestIdentifier]
+	e.Mutex.Unlock()
 	if !ok {
+		e.Mutex.Lock()
 		e.IsProfiling[bestIdentifier] = time.Now()
+		e.Mutex.Unlock()
 		e.HasBeenProfiledFilter.Insert(eventProfile)
 		return 0
 	}
@@ -45,7 +49,9 @@ func (e *Engine) profileExecEvent(evnt event.Event, cmd []string) int {
 	if time.Since(startTime) > time.Hour*3 {
 		e.HasBeenProfiledFilter.Insert(eventProfile)
 		e.IsProfiledFilter.Insert([]byte(bestIdentifier))
+		e.Mutex.Lock()
 		delete(e.IsProfiling, bestIdentifier)
+		e.Mutex.Unlock()
 		return 0
 	}
 	// if subject is still being profiled, insert the eventProfile
