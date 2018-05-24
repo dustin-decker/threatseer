@@ -56,6 +56,12 @@
   version = "v1.1.0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/dgryski/go-metro"
+  packages = ["."]
+  revision = "280f6062b5bc97ee9b9afe7f2ccb361e59845baa"
+
+[[projects]]
   name = "github.com/docker/distribution"
   packages = [
     "digest",
@@ -429,6 +435,12 @@
   version = "v1.2.0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/seiflotfy/cuckoofilter"
+  packages = ["."]
+  revision = "9e8f22b32151c618dd8477afa3314f924677e266"
+
+[[projects]]
   name = "github.com/sirupsen/logrus"
   packages = ["."]
   revision = "c155da19408a8799da419ed3eeb0cb5db0ad5dbc"
@@ -591,6 +603,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "e35d2712112dfad8cee5a867a6377b475ee6e1176e3d16e2a8def54b8586adb3"
+  inputs-digest = "28567d94a36735fc1aab60df9036224039cb61410b414426db82361ba0322ca9"
   solver-name = "gps-cdcl"
   solver-version = 1

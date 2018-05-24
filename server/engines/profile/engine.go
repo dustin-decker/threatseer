@@ -1,0 +1,75 @@
+package profile
+
+import (
+	"time"
+
+	"github.com/dustin-decker/threatseer/server/event"
+	cf "github.com/seiflotfy/cuckoofilter"
+)
+
+// Engine stores engine state
+type Engine struct {
+	// pipeline output
+	Out chan event.Event
+
+	// cuckoo filter for if the application/image/whatever has been profiled
+	IsProfiledFilter *cf.CuckooFilter
+	// cuckoo filter for if the event is present in the profile
+	HasBeenProfiledFilter *cf.CuckooFilter
+	// tracks when profiling started so the application can be added to the IsProfiledFilter
+	IsProfiling map[string]time.Time
+}
+
+// Run initiates the engine on the pipeline
+func (engine *Engine) Run(in chan event.Event) {
+	for {
+		// incoming event from the pipeline
+		e := <-in
+
+		// process profiling
+		processInfo := e.Event.GetProcess()
+		if processInfo != nil {
+			// exec profiling
+			cmd := processInfo.GetExecCommandLine()
+			if len(cmd) > 0 {
+				score := engine.profileExecEvent(e, cmd)
+				if score < 0 {
+					e.Indicators = append(e.Indicators, event.Indicator{
+						Engine:        "profile",
+						RuleName:      "",
+						IndicatorType: "normal_behavior",
+						Description:   "subject is behaving according to its profile",
+						ExtraInfo:     "",
+						Score:         score,
+					})
+				} else if score > 0 {
+					e.Indicators = append(e.Indicators, event.Indicator{
+						Engine:        "profile",
+						RuleName:      "",
+						IndicatorType: "abnormal_behavior",
+						Description:   "subject is behaving outside of its profile",
+						ExtraInfo:     "",
+						Score:         score,
+					})
+				}
+			}
+		}
+		// make event available to the next pipeline engine
+		engine.Out <- e
+	}
+}
+
+// NewProfileEngine returns engine with configs loaded
+func NewProfileEngine() Engine {
+	// var e Engine
+	e := Engine{
+		Out: make(chan event.Event, 0),
+		// 10000 subject capacity
+		IsProfiledFilter: cf.NewCuckooFilter(10000),
+		// 4000 nodes * 2000 eventProfiles per node = 8000000
+		HasBeenProfiledFilter: cf.NewCuckooFilter(8000000),
+		IsProfiling:           map[string]time.Time{},
+	}
+
+	return e
+}
