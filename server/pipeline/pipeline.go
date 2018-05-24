@@ -4,6 +4,7 @@ import (
 	"runtime"
 
 	"github.com/dustin-decker/threatseer/server/engines/dynamic"
+	"github.com/dustin-decker/threatseer/server/engines/profile"
 	"github.com/dustin-decker/threatseer/server/engines/shipper"
 	"github.com/dustin-decker/threatseer/server/engines/static"
 	"github.com/dustin-decker/threatseer/server/event"
@@ -12,9 +13,10 @@ import (
 // NewPipelineFlow wires up the engine pipeline network
 func NewPipelineFlow(numPipelines int, in chan event.Event) {
 
-	se := static.NewStaticRulesEngine()
-	de := dynamic.NewDynamicRulesEngine()
-	bt := shipper.NewShipperEngine()
+	staticRulesEngine := static.NewStaticRulesEngine()
+	dynamicRulesEngine := dynamic.NewDynamicRulesEngine()
+	profileEngine := profile.NewProfileEngine()
+	shipperEngine := shipper.NewShipperEngine()
 
 	if numPipelines == 0 {
 		numPipelines = runtime.NumCPU()
@@ -24,11 +26,11 @@ func NewPipelineFlow(numPipelines int, in chan event.Event) {
 	for w := 0; w <= numPipelines; w++ {
 		// add engines to the pipeline network
 		// each one feeds the next through a channel
-		go se.AnalyzeFromPipeline(in)
+		go staticRulesEngine.AnalyzeFromPipeline(in)
 
-		go de.AnalyzeFromPipeline(se.Out)
+		go dynamicRulesEngine.AnalyzeFromPipeline(se.Out)
 
 		// Final output without an output channel terminates the pipeline network
-		go bt.PublishFromPipeline(de.Out)
+		go shipperEngine.PublishFromPipeline(de.Out)
 	}
 }
