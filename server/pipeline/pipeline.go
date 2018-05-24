@@ -20,12 +20,15 @@ func NewPipelineFlow(numPipelines int, in chan event.Event) {
 		numPipelines = runtime.NumCPU()
 	}
 
+	// start multiple pipelines in parallel
 	for w := 0; w <= numPipelines; w++ {
-		// add engines to the network
-		go se.Run(in)
+		// add engines to the pipeline network
+		// each one feeds the next through a channel
+		go se.AnalyzeFromPipeline(in)
 
-		go de.Run(se.Out)
+		go de.AnalyzeFromPipeline(se.Out)
 
-		go bt.Start(de.Out)
+		// Final output without an output channel terminates the pipeline network
+		go bt.PublishFromPipeline(de.Out)
 	}
 }

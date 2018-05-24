@@ -18,8 +18,8 @@ type Shipper struct {
 	client beat.Client
 }
 
-// Start is the entrypoint from the flow pipeline
-func (s *Shipper) Start(in chan event.Event) {
+// PublishFromPipeline is the entrypoint from the flow pipeline
+func (s *Shipper) PublishFromPipeline(in chan event.Event) {
 	for {
 		// incoming event from the pipeline
 		e := <-in

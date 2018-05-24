@@ -30,8 +30,8 @@ type RulesEngine struct {
 	Rules Rules
 }
 
-// Run initiates the engine on the pipeline
-func (engine *RulesEngine) Run(in chan event.Event) {
+// AnalyzeFromPipeline initiates the engine on the pipeline
+func (engine *RulesEngine) AnalyzeFromPipeline(in chan event.Event) {
 	for {
 		// incoming event from the pipeline
 		e := <-in
