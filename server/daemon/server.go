@@ -34,6 +34,7 @@ import (
 // Server state
 type Server struct {
 	Config Config
+	Ctx    context.Context
 }
 
 // Start is the entrypoint for starting the TCP server and GRPC client
@@ -41,8 +42,19 @@ func Start() {
 	flag.Parse()
 	log.SetFormatter(&log.JSONFormatter{})
 
+	ctx, cancel := context.WithCancel(context.Background())
+
+	// cancel context with ctrl-c interrupt
+	signals := make(chan os.Signal)
+	signal.Notify(signals, os.Interrupt)
+
+	go func() {
+		<-signals
+		cancel()
+	}()
+
 	config := LoadConfigFromFile()
-	server := Server{Config: config}
+	server := Server{Config: config, Ctx: ctx}
 
 	log.Info("launching tcp server")
 
@@ -88,20 +100,9 @@ func Start() {
 func (s *Server) handleConn(conn *grpc.ClientConn, eventChan chan event.Event, clientAddr string) {
 	defer conn.Close()
 
-	ctx, cancel := context.WithCancel(context.Background())
-
-	// cancel context with ctrl-c interrupt
-	signals := make(chan os.Signal)
-	signal.Notify(signals, os.Interrupt)
-
-	go func() {
-		<-signals
-		cancel()
-	}()
-
 	c := api.NewTelemetryServiceClient(conn)
 
-	stream, err := c.GetEvents(ctx, &api.GetEventsRequest{
+	stream, err := c.GetEvents(s.Ctx, &api.GetEventsRequest{
 		Subscription: createSubscription(),
 	})
 
