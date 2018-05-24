@@ -27,7 +27,9 @@
 
 [[constraint]]
   name = "github.com/capsule8/capsule8"
-  version = "0.12.0-alpha"
+#  branch = "master"
+  revision = "0372c2129026ed24e6994c7bf314b15ee28f975b"
+#  version = "0.12.0-alpha"
 
 [[constraint]]
   name = "github.com/golang/protobuf"
