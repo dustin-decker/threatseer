@@ -1,10 +1,10 @@
 ---
 - name: curl
-  reason: fetch resources
+  reason: fetching resources
   score: 50
 
 - name: wget
-  reason: fetch resources
+  reason: fetching resources
   score: 50
 
 - name: nc
@@ -76,5 +76,5 @@
   score: 70
   
 - name: sleep
-  reason: blind RCE check
+  reason: delaying response to check for RCE
   score: 70
