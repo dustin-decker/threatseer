@@ -94,4 +94,4 @@ Docs are sparse at the moment. Threatseer is still under heavy development.
 
 ## Acknowledgements
 
-- [Capsule8](https://capsule8.com/) for their [ opensource library](https://github.com/capsule8/capsule8) that made the agent sensor implementation possible. They're the ones doing the most innovation and work, and it sounds like the have an [interesting product](https://capsule8.com/product/#platform) on the way based it.
+- [Capsule8](https://capsule8.com/) for their [opensource library](https://github.com/capsule8/capsule8) that made the agent sensor implementation possible. They're the ones doing the most innovation and work, and they have an [interesting product](https://capsule8.com/product/#platform) that makes use of the library.

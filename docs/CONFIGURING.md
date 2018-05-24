@@ -2,7 +2,8 @@
 
 # agent
 
-Nothing required except server endpoint (currently hardcoded to localhost)
+Nothing required except server endpoint (currently hardcoded to localhost).
+When mTLS auth is added the server endpoint will be configurable.
 
 # server
 
