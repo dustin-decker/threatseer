@@ -47,7 +47,8 @@
     "pkg/sys/perf",
     "pkg/sys/proc"
   ]
-  revision = "0372c2129026ed24e6994c7bf314b15ee28f975b"
+  revision = "e689ce39ee9d18dc1b0ba3709048e8bfdab38409"
+  version = "v0.13.0-alpha"
 
 [[projects]]
   name = "github.com/davecgh/go-spew"
@@ -603,6 +604,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "28567d94a36735fc1aab60df9036224039cb61410b414426db82361ba0322ca9"
+  inputs-digest = "64e49ab106ea09619feb90f14f7edcd062e060caa26517f042c14e9c1d4c2124"
   solver-name = "gps-cdcl"
   solver-version = 1
