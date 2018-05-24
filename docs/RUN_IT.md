@@ -21,7 +21,7 @@ docker run \
     dustindecker/threatseer:agent-0.1.1
 ```
 
-## Running the agent
+## Running the server
 
 ```bash
 docker run \

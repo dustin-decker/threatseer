@@ -2,6 +2,8 @@
 
 Threatseer is a lightweight agent-based security telemetry solution for Linux that can be deployed to datacenters, clouds, orchestrators, and workstations.
 
+### Try running threatseer [with Docker](docs/RUN_IT.md)
+
  [![Build Status](https://travis-ci.org/dustin-decker/threatseer.svg?branch=master)](https://travis-ci.org/dustin-decker/threatseer)
 
 ## Features
