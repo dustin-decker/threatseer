@@ -12,8 +12,8 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
-// DynamicRules are user defined rules loaded at run time from a yaml file
-type DynamicRules []struct {
+// Rules are user defined rules loaded at run time from a yaml file
+type Rules []struct {
 	Name          string   `yaml:"name"`
 	Description   string   `yaml:"description"`
 	EventType     string   `yaml:"event_type"`
@@ -21,12 +21,13 @@ type DynamicRules []struct {
 	Actions       []string `yaml:"actions"`
 	IndicatorType string   `yaml:"indicator_type"`
 	Score         int      `yaml:"score"`
+	yql           yql.Ruler
 }
 
 // RulesEngine stores engine state
 type RulesEngine struct {
-	Out          chan event.Event
-	DynamicRules DynamicRules
+	Out   chan event.Event
+	Rules Rules
 }
 
 // Run initiates the engine on the pipeline
@@ -38,9 +39,9 @@ func (engine *RulesEngine) Run(in chan event.Event) {
 		// convert struct to map[string]interface{}
 		evnt := structs.Map(e)
 
-		for _, rule := range engine.DynamicRules {
+		for _, rule := range engine.Rules {
 			if len(rule.Query) > 0 {
-				result, err := yql.Match(rule.Query, evnt)
+				result, err := rule.yql.Match(evnt)
 				if err != nil {
 					if err.Error() == "interface conversion: interface is nil, not antlr.ParserRuleContext" {
 						log.WithFields(log.Fields{"rule": rule.Name, "query": rule.Query}).Error("incorrect syntax for dynamic engine rule")
@@ -75,20 +76,27 @@ func NewDynamicRulesEngine() RulesEngine {
 
 	// load risky_process.yaml information
 	filename := "config/dynamic_rules.yaml"
-	var dr DynamicRules
+	var dr Rules
 	if _, err := os.Stat(filename); os.IsNotExist(err) {
-		log.WithFields(log.Fields{"err": err}).Warnf("%s does not exist, not loading any data for that check", filename)
+		log.WithFields(log.Fields{"engine": "dynamic", "err": err, "filename": filename}).Warn("config not found, not using engine")
 	} else {
 		bytes, err := ioutil.ReadFile(filename)
 		if err != nil {
-			log.WithFields(log.Fields{"err": err}).Errorf("could not read %s", filename)
+			log.WithFields(log.Fields{"engine": "dynamic", "err": err, "filename": filename}).Fatal("could not read")
 		}
 		err = yaml.Unmarshal(bytes, &dr)
 		if err != nil {
-			log.WithFields(log.Fields{"err": err}).Errorf("could not parse %s", filename)
+			log.WithFields(log.Fields{"engine": "dynamic", "err": err, "filename": filename}).Fatal("could not parse")
 		}
 	}
-	e.DynamicRules = dr
+	e.Rules = dr
+	for _, rule := range dr {
+		compiledRule, err := yql.Rule(rule.Query)
+		if err != nil {
+			log.WithFields(log.Fields{"engine": "dynamic", "err": err, "filename": filename}).Fatal("could not compile rule")
+		}
+		rule.yql = compiledRule
+	}
 	e.Out = make(chan event.Event, 0)
 
 	return e
