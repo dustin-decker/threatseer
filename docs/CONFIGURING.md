@@ -13,7 +13,7 @@ Daemon-level configuration options are in [`/config/daemon.yaml`](/config/daemon
 The daemon config is self-documented.
 
 ## Logging
-Configure [`beats.yml`](/beats.yml) per [the docs](https://www.elastic.co/guide/en/beats/filebeat/current/configuring-output.html) or the documentation in [the file](/beats.yml).
+Configure [`beat.yml`](/beat.yml) per [the docs](https://www.elastic.co/guide/en/beats/filebeat/current/configuring-output.html) or the documentation in [the file](/beat.yml).
 
 ## Analysis Engines
 
