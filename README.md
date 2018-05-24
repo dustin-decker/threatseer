@@ -1,17 +1,10 @@
-# threatseer
+# threatseer <img align="right" src="docs/images/gopher.svg" width="200">
 
-A lightweight linux endpoint security solution
+Threatseer is a lightweight agent-based security telemetry solution for Linux that can be deployed to datacenters, clouds, orchestrators, and workstations.
 
-<p align="center">
-  <img src="docs/images/gopher.svg" width="200"/>
-</p>
+ [![Build Status](https://travis-ci.org/dustin-decker/threatseer.svg?branch=master)](https://travis-ci.org/dustin-decker/threatseer)
 
-[![Build Status](https://travis-ci.org/dustin-decker/threatseer.svg?branch=master)](https://travis-ci.org/dustin-decker/threatseer)
-
-
-## What is it?
-
-Threatseer is an lightweight agent-based security solution for Linux that can be deployed to datacenters, clouds, orchestrators, and workstations.
+## Features
 
 ### Agent features
 
