@@ -3,7 +3,6 @@ package daemon
 import (
 	api "github.com/capsule8/capsule8/api/v0"
 
-	"github.com/capsule8/capsule8/pkg/expression"
 	"github.com/golang/protobuf/ptypes/wrappers"
 )
 
@@ -42,23 +41,23 @@ func createSubscription() *api.Subscription {
 		},
 	}
 
-	sinFamilyFilter := expression.Equal(
-		expression.Identifier("sin_family"),
-		expression.Value(uint16(2)))
+	// sinFamilyFilter := expression.Equal(
+	// 	expression.Identifier("sin_family"),
+	// 	expression.Value(uint16(2)))
 	kernelCallEvents := []*api.KernelFunctionCallFilter{
 		//
 		// Install a kprobe on connect(2)
 		//
-		&api.KernelFunctionCallFilter{
-			Type:   api.KernelFunctionCallEventType_KERNEL_FUNCTION_CALL_EVENT_TYPE_ENTER,
-			Symbol: "SyS_connect",
-			Arguments: map[string]string{
-				"sin_family": "+0(%si):u16",
-				"sin_port":   "+2(%si):u16",
-				"sin_addr":   "+4(%si):u32",
-			},
-			FilterExpression: sinFamilyFilter,
-		},
+		// &api.KernelFunctionCallFilter{
+		// 	Type:   api.KernelFunctionCallEventType_KERNEL_FUNCTION_CALL_EVENT_TYPE_ENTER,
+		// 	Symbol: "SyS_connect",
+		// 	Arguments: map[string]string{
+		// 		"sin_family": "+0(%si):u16",
+		// 		"sin_port":   "+2(%si):u16",
+		// 		"sin_addr":   "+4(%si):u32",
+		// 	},
+		// 	FilterExpression: sinFamilyFilter,
+		// },
 	}
 
 	containerEvents := []*api.ContainerEventFilter{
