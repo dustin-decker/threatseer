@@ -23,8 +23,8 @@ type Engine struct {
 	Mutex *sync.Mutex
 }
 
-// Run initiates the engine on the pipeline
-func (engine *Engine) Run(in chan event.Event) {
+// AnalyzeFromPipeline initiates the engine on the pipeline
+func (engine *Engine) AnalyzeFromPipeline(in chan event.Event) {
 	for {
 		// incoming event from the pipeline
 		e := <-in
@@ -66,7 +66,7 @@ func (engine *Engine) Run(in chan event.Event) {
 func NewProfileEngine() Engine {
 	// var e Engine
 	e := Engine{
-		Out: make(chan event.Event, 0),
+		Out: make(chan event.Event, 10),
 		// 10000 subject capacity
 		IsProfiledFilter: cf.NewCuckooFilter(10000),
 		// 4000 nodes * 2000 eventProfiles per node = 8000000

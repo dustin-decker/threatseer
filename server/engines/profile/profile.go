@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/dustin-decker/threatseer/server/event"
+	log "github.com/sirupsen/logrus"
 )
 
 func (e *Engine) getBestIdentifier(evnt event.Event) string {
@@ -46,7 +47,8 @@ func (e *Engine) profileExecEvent(evnt event.Event, cmd []string) int {
 	// add the last eventProfile,
 	// add it to the IsProfiledFilter,
 	// and remove from IsProfiling map
-	if time.Since(startTime) > time.Hour*3 {
+	if time.Since(startTime) > time.Minute*3 {
+		log.WithFields(log.Fields{"engine": "profile", "identifier": bestIdentifier}).Error("done profiling subject")
 		e.HasBeenProfiledFilter.Insert(eventProfile)
 		e.IsProfiledFilter.Insert([]byte(bestIdentifier))
 		e.Mutex.Lock()

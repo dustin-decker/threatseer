@@ -69,7 +69,7 @@ func Start() {
 
 	log.Info("starting engine pipeline")
 	// create the network
-	eventChan := make(chan event.Event)
+	eventChan := make(chan event.Event, 50)
 	pipeline.NewPipelineFlow(server.Config.NumberOfPipelines, eventChan)
 
 	log.Info("waiting for incoming TCP connections")

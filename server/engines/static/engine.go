@@ -58,7 +58,7 @@ func NewStaticRulesEngine() RulesEngine {
 		}
 	}
 	e.riskyProcesses = rp
-	e.Out = make(chan event.Event, 0)
+	e.Out = make(chan event.Event, 10)
 
 	return e
 }

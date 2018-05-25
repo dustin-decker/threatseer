@@ -28,9 +28,11 @@ func NewPipelineFlow(numPipelines int, in chan event.Event) {
 		// each one feeds the next through a channel
 		go staticRulesEngine.AnalyzeFromPipeline(in)
 
-		go dynamicRulesEngine.AnalyzeFromPipeline(se.Out)
+		go dynamicRulesEngine.AnalyzeFromPipeline(staticRulesEngine.Out)
+
+		go profileEngine.AnalyzeFromPipeline(dynamicRulesEngine.Out)
 
 		// Final output without an output channel terminates the pipeline network
-		go shipperEngine.PublishFromPipeline(de.Out)
+		go shipperEngine.PublishFromPipeline(profileEngine.Out)
 	}
 }
