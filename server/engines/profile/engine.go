@@ -16,7 +16,7 @@ type Engine struct {
 	// cuckoo filter for if the application/image/whatever has been profiled
 	IsProfiledFilter *cf.CuckooFilter
 	// cuckoo filter for if the event is present in the profile
-	HasBeenProfiledFilter *cf.CuckooFilter
+	EventFilter *cf.CuckooFilter
 	// tracks when profiling started so the application can be added to the IsProfiledFilter
 	IsProfiling map[string]time.Time
 
@@ -64,15 +64,14 @@ func (engine *Engine) AnalyzeFromPipeline(in chan event.Event) {
 
 // NewProfileEngine returns engine with configs loaded
 func NewProfileEngine() Engine {
-	// var e Engine
 	e := Engine{
 		Out: make(chan event.Event, 10),
 		// 10000 subject capacity
 		IsProfiledFilter: cf.NewCuckooFilter(10000),
 		// 4000 nodes * 2000 eventProfiles per node = 8000000
-		HasBeenProfiledFilter: cf.NewCuckooFilter(8000000),
-		IsProfiling:           map[string]time.Time{},
-		Mutex:                 &sync.Mutex{},
+		EventFilter: cf.NewCuckooFilter(8000000),
+		IsProfiling: map[string]time.Time{},
+		Mutex:       &sync.Mutex{},
 	}
 
 	return e

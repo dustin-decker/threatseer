@@ -22,7 +22,7 @@ The Dynamic Rules Engine allows for the user to prove custom query-based rules t
 
 ### Profile Engine (todo)
 
-Automatically generates execution profile for binaries or container image (if applicable). Applies a positive or negative score to the event depending on if the behavior is outside, or inside the profile.
+Automatically generates execution profile for binaries or container image ID (if applicable). Applies a positive or negative score to the event depending on if the behavior is outside, or inside the profile.
 
 ### Classification Engine (todo)
 

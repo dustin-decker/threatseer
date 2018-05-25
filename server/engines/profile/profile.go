@@ -9,9 +9,9 @@ import (
 )
 
 func (e *Engine) getBestIdentifier(evnt event.Event) string {
-	containerName := evnt.Event.GetContainerName()
-	if len(containerName) > 0 {
-		return containerName
+	imageID := evnt.Event.GetImageId()
+	if len(imageID) > 0 {
+		return imageID
 	}
 
 	return evnt.Event.GetProcessId()
@@ -24,7 +24,7 @@ func (e *Engine) profileExecEvent(evnt event.Event, cmd []string) int {
 	// if subject has been profiled
 	if e.IsProfiledFilter.Lookup([]byte(bestIdentifier)) {
 		// if event has not been seen before, return a positive risk indicator
-		if !e.HasBeenProfiledFilter.Lookup(eventProfile) {
+		if !e.EventFilter.Lookup(eventProfile) {
 			return 50
 		}
 		// it has been seen in the profile, so return a negative risk indicator
@@ -39,25 +39,26 @@ func (e *Engine) profileExecEvent(evnt event.Event, cmd []string) int {
 		e.Mutex.Lock()
 		e.IsProfiling[bestIdentifier] = time.Now()
 		e.Mutex.Unlock()
-		e.HasBeenProfiledFilter.Insert(eventProfile)
+		e.EventFilter.Insert(eventProfile)
 		return 0
 	}
 
-	// if subject has been profiled over 3 hours,
+	// if subject has been profiled over the req'd time period,
 	// add the last eventProfile,
 	// add it to the IsProfiledFilter,
 	// and remove from IsProfiling map
-	if time.Since(startTime) > time.Minute*3 {
+	if time.Since(startTime) > time.Second*15 {
 		log.WithFields(log.Fields{"engine": "profile", "identifier": bestIdentifier}).Error("done profiling subject")
-		e.HasBeenProfiledFilter.Insert(eventProfile)
+		e.EventFilter.Insert(eventProfile)
 		e.IsProfiledFilter.Insert([]byte(bestIdentifier))
 		e.Mutex.Lock()
 		delete(e.IsProfiling, bestIdentifier)
 		e.Mutex.Unlock()
 		return 0
 	}
+
 	// if subject is still being profiled, insert the eventProfile
-	e.HasBeenProfiledFilter.Insert(eventProfile)
+	e.EventFilter.Insert(eventProfile)
 	return 0
 
 }

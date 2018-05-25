@@ -10,7 +10,7 @@ Threatseer is a lightweight agent-based security telemetry solution for Linux th
 
 ### Agent features
 
-The agent collects security telemetry which is offloaded to a server for analysis.
+The agent collects security telemetry which is offloaded to a server for behavioral analysis.
 
 - event-driven structured data of important system events
   - container lifecycle
