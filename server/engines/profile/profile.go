@@ -32,13 +32,9 @@ func (e *Engine) profileExecEvent(evnt event.Event, cmd []string) int {
 	}
 
 	// if subject has not been profiled, mark it as profiling now, and insert this eventProfile
-	e.Mutex.Lock()
-	startTime, ok := e.IsProfiling[bestIdentifier]
-	e.Mutex.Unlock()
-	if !ok {
-		e.Mutex.Lock()
-		e.IsProfiling[bestIdentifier] = time.Now()
-		e.Mutex.Unlock()
+	subjectExists := e.IsProfiling.Contains(bestIdentifier)
+	if !subjectExists {
+		e.IsProfiling.Add(bestIdentifier, time.Now())
 		e.EventFilter.Insert(eventProfile)
 		return 0
 	}
@@ -47,13 +43,12 @@ func (e *Engine) profileExecEvent(evnt event.Event, cmd []string) int {
 	// add the last eventProfile,
 	// add it to the IsProfiledFilter,
 	// and remove from IsProfiling map
-	if time.Since(startTime) > e.ProfileBuildingDuration {
+	startTime, ok := e.IsProfiling.Get(bestIdentifier)
+	if ok && time.Since(startTime.(time.Time)) > e.ProfileBuildingDuration {
 		log.WithFields(log.Fields{"engine": "profile", "identifier": bestIdentifier}).Error("done profiling subject")
 		e.EventFilter.Insert(eventProfile)
 		e.IsProfiledFilter.Insert([]byte(bestIdentifier))
-		e.Mutex.Lock()
-		delete(e.IsProfiling, bestIdentifier)
-		e.Mutex.Unlock()
+		e.IsProfiling.Remove(bestIdentifier)
 		return 0
 	}
 

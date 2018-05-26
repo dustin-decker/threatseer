@@ -402,6 +402,15 @@
   version = "v1.4.0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/hashicorp/golang-lru"
+  packages = [
+    ".",
+    "simplelru"
+  ]
+  revision = "0fb14efe8c47ae851c0034ed7a448854d3d34cf3"
+
+[[projects]]
   name = "github.com/inconshreveable/mousetrap"
   packages = ["."]
   revision = "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
@@ -668,6 +677,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "4c4a1294e9d2d61fe4f985ef49e945ad4286481a047104a872033dd76c2277f8"
+  inputs-digest = "4ace4269f4404b0292af788143f458471549c51419e094f8474c0bb8670d0981"
   solver-name = "gps-cdcl"
   solver-version = 1
