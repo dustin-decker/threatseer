@@ -14,5 +14,5 @@ RUN export PATH=$PATH:`go env GOHOSTOS`-`go env GOHOSTARCH` \
 
 # Production image
 FROM scratch
-COPY --from=builder /go/src/github.com/dustin-decker/threatseer/bin/agent /agent
-ENTRYPOINT ["/agent"]
+COPY --from=builder /go/src/github.com/dustin-decker/threatseer/bin/agent /bin/agent
+ENTRYPOINT ["/bin/agent"]

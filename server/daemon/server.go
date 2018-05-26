@@ -17,14 +17,19 @@ package daemon
 import (
 	"context"
 	"flag"
+	"fmt"
 	"net"
 	"os"
 	"os/signal"
 	"time"
 
+	"github.com/elastic/beats/libbeat/beat"
+	"github.com/elastic/beats/libbeat/common"
+	"github.com/elastic/beats/libbeat/logp"
 	log "github.com/sirupsen/logrus"
 
 	api "github.com/capsule8/capsule8/api/v0"
+	"github.com/dustin-decker/threatseer/server/config"
 	"github.com/dustin-decker/threatseer/server/event"
 	"github.com/dustin-decker/threatseer/server/pipeline"
 
@@ -33,12 +38,41 @@ import (
 
 // Server state
 type Server struct {
-	Config Config
+	// threatsser stuff
 	Ctx    context.Context
+	Cancel context.CancelFunc
+	Beat   *beat.Beat
+	done   chan struct{}
+	Config config.Config
 }
 
-// Start is the entrypoint for starting the TCP server and GRPC client
-func Start() {
+// New creates new Server object
+func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
+	config := config.DefaultConfig
+	if err := cfg.Unpack(&config); err != nil {
+		return nil, fmt.Errorf("Error reading config file: %v", err)
+	}
+
+	bt := &Server{
+		done:   make(chan struct{}),
+		Config: config,
+	}
+	return bt, nil
+}
+
+// Stop cleanly shuts down threatseer
+func (s *Server) Stop() {
+	// cancel current agent connections
+	s.Cancel()
+
+	// todo: send pipeline input shutdown signal
+	// and return when it's clear
+}
+
+// Run is the entrypoint for starting the TCP server and GRPC client
+// The main event loop that should block until signalled to stop by an
+// invocation of the Stop() method.
+func (s *Server) Run(b *beat.Beat) error {
 	flag.Parse()
 	log.SetFormatter(&log.JSONFormatter{})
 
@@ -53,24 +87,26 @@ func Start() {
 		cancel()
 	}()
 
-	config := LoadConfigFromFile()
-	server := Server{Config: config, Ctx: ctx}
+	s.Ctx = ctx
+	s.Cancel = cancel
 
-	log.Info("launching tcp server")
+	logp.Info("launching tcp server")
 
 	// start tcp listener on all interfaces
 	// note that each connection consumes a file descriptor
 	// you may need to increase your fd limits if you have many concurrent clients
-	ln, err := net.Listen("tcp", server.Config.ListenAddress)
+	ln, err := net.Listen("tcp", s.Config.ListenAddress)
 	if err != nil {
-		log.WithFields(log.Fields{"err": err}).Fatal("could not listen")
+		log.WithFields(log.Fields{"err": err}).Error("could not listen")
+		return err
 	}
 	defer ln.Close()
+	log.WithFields(log.Fields{"listen_address": s.Config.ListenAddress}).Info("threatseer server listening for connections")
 
-	log.Info("starting engine pipeline")
+	logp.Info("starting engine pipeline")
 	// create the network
 	eventChan := make(chan event.Event, 50)
-	pipeline.NewPipelineFlow(server.Config.NumberOfPipelines, eventChan)
+	pipeline.NewPipelineFlow(b, s.Config.NumberOfPipelines, eventChan)
 
 	log.Info("waiting for incoming TCP connections")
 
@@ -95,7 +131,7 @@ func Start() {
 		}
 
 		// handle connection in goroutine so we can accept new TCP connections
-		go server.handleConn(conn, eventChan, clientAddr)
+		go s.handleConn(conn, eventChan, clientAddr)
 	}
 }
 

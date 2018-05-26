@@ -14,7 +14,8 @@ RUN export PATH=$PATH:`go env GOHOSTOS`-`go env GOHOSTARCH` \
 
 # Production image
 FROM scratch
-COPY --from=builder /go/src/github.com/dustin-decker/threatseer/beat.yml /beat.yml
+COPY --from=builder /go/src/github.com/dustin-decker/threatseer/threatseer.yml /threatseer.yml
+COPY --from=builder /go/src/github.com/dustin-decker/threatseer/threatseer.elk.yml /threatseer.elk.yml
 COPY --from=builder /go/src/github.com/dustin-decker/threatseer/config /config
-COPY --from=builder /go/src/github.com/dustin-decker/threatseer/bin/server /server
-ENTRYPOINT ["/server"]
+COPY --from=builder /go/src/github.com/dustin-decker/threatseer/bin/server /bin/server
+ENTRYPOINT ["/bin/server"]

@@ -1,4 +1,13 @@
 
+#================================ Threatseer ===================================
+
+threatseer:
+  # Number of pipelines defaults to the number of CPUs available to the server.
+  # number_of_pipelines: 4
+
+  listen_address: 0.0.0.0:8081
+
+
 #================================ General ======================================
 
 # The name of the shipper that publishes the network data. It can be used to group
@@ -23,25 +32,25 @@
 #fields_under_root: false
 
 # Internal queue configuration for buffering events to be published.
-#queue:
+queue:
   # Queue type by name (default 'mem')
   # The memory queue will present all available events (up to the outputs
   # bulk_max_size) to the output, the moment the output is ready to server
   # another batch of events.
-  #mem:
+  mem:
     # Max number of events the queue can buffer.
-    #events: 4096
+    events: 4096
 
     # Hints the minimum number of events stored in the queue,
     # before providing a batch of events to the outputs.
     # The default value is set to 2048.
     # A value of 0 ensures events are immediately available
     # to be sent to the outputs.
-    #flush.min_events: 2048
+    flush.min_events: 2048
 
     # Maximum duration after which events are available to the outputs,
     # if the number of events stored in the queue is < min_flush_events.
-    #flush.timeout: 1s
+    flush.timeout: 1s
 
   # The spool queue will store events in a local spool file, before
   # forwarding the events to the outputs.
@@ -209,23 +218,23 @@
 # Configure what output to use when sending the data collected by the beat.
 
 #-------------------------- Elasticsearch output -------------------------------
-# output.elasticsearch:
+output.elasticsearch:
   # Boolean flag to enable or disable the output module.
-  # enabled: false
+  enabled: true
 
   # Array of hosts to connect to.
   # Scheme and port can be left out and will be set to the default (http and 9200)
   # In case you specify and additional path, the scheme is required: http://localhost:9200/path
   # IPv6 addresses should always be defined as: https://[2001:db8::1]:9200
-  # hosts: ["localhost:9200"]
+  hosts: ["localhost:9200"]
 
   # Set gzip compression level.
   #compression_level: 0
 
   # Optional protocol and basic auth credentials.
-  #protocol: "https"
-  #username: "elastic"
-  #password: "changeme"
+  protocol: "http"
+  username: "threatseer"
+  password: "changeme"
 
   # Dictionary of HTTP parameters to pass within the url with index operations.
   #parameters:
@@ -238,7 +247,7 @@
   # Optional index name. The default is "beat-index-prefix" plus date
   # and generates [beat-index-prefix-]YYYY.MM.DD keys.
   # In case you modify this pattern you must update setup.template.name and setup.template.pattern accordingly.
-  #index: "beat-index-prefix-%{[beat.version]}-%{+yyyy.MM.dd}"
+  # index: "threatseer-%{+yyyy.MM.dd}"
 
   # Optional ingest node pipeline. By default no pipeline will be used.
   #pipeline: ""
@@ -648,10 +657,10 @@
 #----------------------------- Console output ---------------------------------
 output.console:
   # Boolean flag to enable or disable the output module.
-  enabled: true
+  enabled: false
 
   # Pretty print json event
-  pretty: false
+  pretty: true
 
 #================================= Paths ======================================
 
@@ -666,7 +675,7 @@ output.console:
 # base path for configuration files, including the main YAML configuration file
 # and the Elasticsearch template file. If not set by a CLI flag or in the
 # configuration file, the default for the configuration path is the home path.
-#path.config: ${path.home}
+path.config: ../config
 
 # The data path for the beatname installation. This is the default base path
 # for all the files in which beatname needs to store its data. If not set by a
@@ -735,7 +744,7 @@ output.console:
 # These settings can be adjusted to load your own template or overwrite existing ones.
 
 # Set to false to disable template loading.
-#setup.template.enabled: true
+setup.template.enabled: true
 
 # Template name. By default the template name is "beat-index-prefix-%{[beat.version]}"
 # The template name and pattern has to be set in case the elasticsearch index pattern is modified.
@@ -747,7 +756,7 @@ output.console:
 #setup.template.pattern: "beat-index-prefix-%{[beat.version]}-*"
 
 # Path to fields.yml file to generate the template
-#setup.template.fields: "${path.config}/fields.yml"
+setup.template.fields: "${path.config}/elasticsearch_fields.yml"
 
 # Overwrite existing template
 #setup.template.overwrite: false
@@ -772,7 +781,7 @@ setup.template.settings:
 
 # Starting with Beats version 6.0.0, the dashboards are loaded via the Kibana API.
 # This requires a Kibana endpoint configuration.
-setup.kibana:
+# setup.kibana:
 
   # Kibana Host
   # Scheme and port can be left out and will be set to the default (http and 5601)
@@ -845,15 +854,15 @@ logging.level: info
 # in the last period. For each metric that changed, the delta from the value at
 # the beginning of the period is logged. Also, the total values for
 # all non-zero internal metrics are logged on shutdown. The default is true.
-#logging.metrics.enabled: true
+logging.metrics.enabled: true
 
 # The period after which to log the internal metrics. The default is 30s.
-#logging.metrics.period: 30s
+logging.metrics.period: 30s
 
 # Logging to rotating files. Set logging.to_files to false to disable logging to
 # files.
 logging.to_files: false
-logging.files:
+# logging.files:
   # Configure the path where the logs are written. The default is the logs directory
   # under the home path (the binary location).
   #path: /var/log/beatname
@@ -873,7 +882,7 @@ logging.files:
   #permissions: 0600
 
 # Set to true to log messages in json format.
-#logging.json: false
+logging.json: true
 
 
 #============================== Xpack Monitoring =====================================

@@ -16,8 +16,20 @@ package main
 
 import (
 	"github.com/dustin-decker/threatseer/server/daemon"
+	cmd "github.com/elastic/beats/libbeat/cmd"
+	log "github.com/sirupsen/logrus"
 )
 
 func main() {
-	daemon.Start()
+	var Name = "threatseer"
+	var Version = "0.1.1"
+
+	RootCmd := cmd.GenRootCmd(Name, Version, daemon.New)
+
+	// send to stdout by default
+	RootCmd.SetArgs([]string{"-e"})
+
+	if err := RootCmd.Execute(); err != nil {
+		log.Fatal(err)
+	}
 }
