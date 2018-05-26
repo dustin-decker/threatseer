@@ -1,4 +1,4 @@
-package pipeline
+package daemon
 
 import (
 	"runtime"
@@ -14,7 +14,7 @@ import (
 )
 
 // NewPipelineFlow wires up the engine pipeline network
-func NewPipelineFlow(b *beat.Beat, numPipelines int, in chan event.Event) {
+func (s *Server) NewPipelineFlow(b *beat.Beat, numPipelines uint, in chan event.Event) {
 
 	staticRulesEngine := static.NewStaticRulesEngine()
 	log.WithFields(log.Fields{"engine": "static"}).Info("started engine")
@@ -22,18 +22,19 @@ func NewPipelineFlow(b *beat.Beat, numPipelines int, in chan event.Event) {
 	dynamicRulesEngine := dynamic.NewDynamicRulesEngine()
 	log.WithFields(log.Fields{"engine": "dynamic"}).Info("started engine")
 
-	profileEngine := profile.NewProfileEngine()
+	profileEngine := profile.NewProfileEngine(s.Config)
 	log.WithFields(log.Fields{"engine": "profile"}).Info("started engine")
 
 	shipperEngine := shipper.NewShipperEngine(b)
 	log.WithFields(log.Fields{"engine": "shipper"}).Info("started engine")
 
 	if numPipelines == 0 {
-		numPipelines = runtime.NumCPU()
+		numPipelines = uint(runtime.NumCPU())
 	}
 
 	// start multiple pipelines in parallel
-	for w := 0; w <= numPipelines; w++ {
+	var w uint
+	for w = 0; w <= numPipelines; w++ {
 		// add engines to the pipeline network
 		// each one feeds the next through a channel
 		go staticRulesEngine.AnalyzeFromPipeline(in)

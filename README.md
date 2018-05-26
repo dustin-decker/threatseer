@@ -17,7 +17,7 @@ The agent collects security telemetry which is offloaded to a server for behavio
   - processes touching sensitive data
   - processes spawned and lifecycle events
   - network events
-- low resource cost: typically less than ~3% of one CPU core, ~30MiB RAM
+- low resource cost: typically less than ~1% of one CPU core, ~30MiB RAM
 - ~5mb statically compiled binary deployable
 
 ### Server features

@@ -31,7 +31,6 @@ import (
 	api "github.com/capsule8/capsule8/api/v0"
 	"github.com/dustin-decker/threatseer/server/config"
 	"github.com/dustin-decker/threatseer/server/event"
-	"github.com/dustin-decker/threatseer/server/pipeline"
 
 	"google.golang.org/grpc"
 )
@@ -106,7 +105,7 @@ func (s *Server) Run(b *beat.Beat) error {
 	logp.Info("starting engine pipeline")
 	// create the network
 	eventChan := make(chan event.Event, 1000)
-	pipeline.NewPipelineFlow(b, s.Config.NumberOfPipelines, eventChan)
+	s.NewPipelineFlow(b, s.Config.NumberOfPipelines, eventChan)
 
 	log.Info("waiting for incoming TCP connections")
 

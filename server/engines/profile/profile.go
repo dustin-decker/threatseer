@@ -47,7 +47,7 @@ func (e *Engine) profileExecEvent(evnt event.Event, cmd []string) int {
 	// add the last eventProfile,
 	// add it to the IsProfiledFilter,
 	// and remove from IsProfiling map
-	if time.Since(startTime) > time.Second*15 {
+	if time.Since(startTime) > e.ProfileBuildingDuration {
 		log.WithFields(log.Fields{"engine": "profile", "identifier": bestIdentifier}).Error("done profiling subject")
 		e.EventFilter.Insert(eventProfile)
 		e.IsProfiledFilter.Insert([]byte(bestIdentifier))

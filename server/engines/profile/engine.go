@@ -4,6 +4,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/dustin-decker/threatseer/server/config"
 	"github.com/dustin-decker/threatseer/server/event"
 	cf "github.com/seiflotfy/cuckoofilter"
 )
@@ -19,6 +20,8 @@ type Engine struct {
 	EventFilter *cf.CuckooFilter
 	// tracks when profiling started so the application can be added to the IsProfiledFilter
 	IsProfiling map[string]time.Time
+
+	ProfileBuildingDuration time.Duration
 
 	Mutex *sync.Mutex
 }
@@ -63,15 +66,16 @@ func (engine *Engine) AnalyzeFromPipeline(in chan event.Event) {
 }
 
 // NewProfileEngine returns engine with configs loaded
-func NewProfileEngine() Engine {
+func NewProfileEngine(c config.Config) Engine {
 	e := Engine{
 		Out: make(chan event.Event, 10),
 		// 10000 subject capacity
-		IsProfiledFilter: cf.NewCuckooFilter(10000),
+		IsProfiledFilter: cf.NewCuckooFilter(100000),
 		// 4000 nodes * 2000 eventProfiles per node = 8000000
-		EventFilter: cf.NewCuckooFilter(8000000),
-		IsProfiling: map[string]time.Time{},
-		Mutex:       &sync.Mutex{},
+		EventFilter:             cf.NewCuckooFilter(c.ProfileEventFilterCacheSize),
+		IsProfiling:             map[string]time.Time{},
+		ProfileBuildingDuration: c.ProfileBuildingDuration,
+		Mutex: &sync.Mutex{},
 	}
 
 	return e
