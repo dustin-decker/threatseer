@@ -28,8 +28,8 @@
 [[constraint]]
   name = "github.com/capsule8/capsule8"
 #  branch = "master"
-  revision = "0372c2129026ed24e6994c7bf314b15ee28f975b"
-#  version = "0.12.0-alpha"
+#  revision = "0372c2129026ed24e6994c7bf314b15ee28f975b"
+  version = "0.13.0-alpha"
 
 [[constraint]]
   name = "github.com/golang/protobuf"
@@ -38,6 +38,24 @@
 [[constraint]]
   name = "google.golang.org/grpc"
   version = "1.11.2"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/caibirdme/yql"
+
+[[constraint]]
+  name = "github.com/elastic/beats"
+  version = "v6.2.4"
+
+# required for beats
+[[override]]
+  name = "github.com/rcrowley/go-metrics"
+  revision = "1f30fe9094a513ce4c700b9a54458bbb0c96996c"
+
+# required for beats
+[[override]]
+  name = "github.com/ericchiang/k8s"
+  revision = "5803ed75e31fc1998b5f781ac08e22ff985c3f8f"
 
 [prune]
   go-tests = true

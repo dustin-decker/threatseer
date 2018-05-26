@@ -47,13 +47,20 @@
     "pkg/sys/perf",
     "pkg/sys/proc"
   ]
-  revision = "0372c2129026ed24e6994c7bf314b15ee28f975b"
+  revision = "e689ce39ee9d18dc1b0ba3709048e8bfdab38409"
+  version = "v0.13.0-alpha"
 
 [[projects]]
   name = "github.com/davecgh/go-spew"
   packages = ["spew"]
   revision = "346938d642f2ec3594ed81d874461961cd0faa76"
   version = "v1.1.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/dgryski/go-metro"
+  packages = ["."]
+  revision = "280f6062b5bc97ee9b9afe7f2ccb361e59845baa"
 
 [[projects]]
   name = "github.com/docker/distribution"
@@ -133,11 +140,15 @@
     "libbeat/beat",
     "libbeat/cfgfile",
     "libbeat/cloudid",
+    "libbeat/cmd",
+    "libbeat/cmd/export",
     "libbeat/cmd/instance",
+    "libbeat/cmd/test",
     "libbeat/common",
     "libbeat/common/atomic",
     "libbeat/common/bus",
     "libbeat/common/cfgwarn",
+    "libbeat/common/cli",
     "libbeat/common/docker",
     "libbeat/common/dtfmt",
     "libbeat/common/file",
@@ -148,6 +159,7 @@
     "libbeat/common/schema",
     "libbeat/common/schema/mapstriface",
     "libbeat/common/streambuf",
+    "libbeat/common/terminal",
     "libbeat/dashboards",
     "libbeat/keystore",
     "libbeat/logp",
@@ -277,6 +289,31 @@
   version = "v1.0"
 
 [[projects]]
+  name = "github.com/fsouza/go-dockerclient"
+  packages = [
+    ".",
+    "external/github.com/Sirupsen/logrus",
+    "external/github.com/docker/docker/opts",
+    "external/github.com/docker/docker/pkg/archive",
+    "external/github.com/docker/docker/pkg/fileutils",
+    "external/github.com/docker/docker/pkg/homedir",
+    "external/github.com/docker/docker/pkg/idtools",
+    "external/github.com/docker/docker/pkg/ioutils",
+    "external/github.com/docker/docker/pkg/longpath",
+    "external/github.com/docker/docker/pkg/pools",
+    "external/github.com/docker/docker/pkg/promise",
+    "external/github.com/docker/docker/pkg/stdcopy",
+    "external/github.com/docker/docker/pkg/system",
+    "external/github.com/docker/go-units",
+    "external/github.com/hashicorp/go-cleanhttp",
+    "external/github.com/opencontainers/runc/libcontainer/user",
+    "external/golang.org/x/net/context",
+    "external/golang.org/x/sys/unix"
+  ]
+  revision = "1d4f4ae73768d3ca16a6fb964694f58dc5eba601"
+  version = "docker-1.9/go-1.4"
+
+[[projects]]
   name = "github.com/garyburd/redigo"
   packages = [
     "internal",
@@ -290,6 +327,17 @@
   packages = ["."]
   revision = "0ca9ea5df5451ffdf184b4428c902747c2c11cd7"
   version = "v1.0.0"
+
+[[projects]]
+  name = "github.com/gliderlabs/logspout"
+  packages = [
+    "adapters/raw",
+    "router",
+    "transports/tcp",
+    "transports/udp"
+  ]
+  revision = "acfb3029418f5fff23e327872a6739a588d0931e"
+  version = "v3.2.4"
 
 [[projects]]
   name = "github.com/go-ole/go-ole"
@@ -354,6 +402,12 @@
   version = "v1.4.0"
 
 [[projects]]
+  name = "github.com/inconshreveable/mousetrap"
+  packages = ["."]
+  revision = "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
+  version = "v1.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/joeshaw/multierror"
   packages = ["."]
@@ -379,6 +433,12 @@
   packages = ["."]
   revision = "ae7887de9fa5d2db4eaa8174a7eff2c1ac00f2da"
   version = "v1.1"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/looplab/logspout-logstash"
+  packages = ["."]
+  revision = "68a4e47e757da53f606a8984ef97a207b953cc7c"
 
 [[projects]]
   name = "github.com/mattn/go-colorable"
@@ -417,7 +477,6 @@
   version = "v0.8.0"
 
 [[projects]]
-  branch = "master"
   name = "github.com/rcrowley/go-metrics"
   packages = ["."]
   revision = "1f30fe9094a513ce4c700b9a54458bbb0c96996c"
@@ -429,10 +488,28 @@
   version = "v1.2.0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/seiflotfy/cuckoofilter"
+  packages = ["."]
+  revision = "9e8f22b32151c618dd8477afa3314f924677e266"
+
+[[projects]]
   name = "github.com/sirupsen/logrus"
   packages = ["."]
   revision = "c155da19408a8799da419ed3eeb0cb5db0ad5dbc"
   version = "v1.0.5"
+
+[[projects]]
+  name = "github.com/spf13/cobra"
+  packages = ["."]
+  revision = "ef82de70bb3f60c65fb8eebacbb2d122ef517385"
+  version = "v0.0.3"
+
+[[projects]]
+  name = "github.com/spf13/pflag"
+  packages = ["."]
+  revision = "583c0c0531f06d5278b7d917446061adc344b5cd"
+  version = "v1.0.1"
 
 [[projects]]
   name = "github.com/urso/go-structform"
@@ -540,7 +617,7 @@
     "go/buildutil",
     "go/loader"
   ]
-  revision = "28aef64757f4d432485ab970b094e1af8b301e84"
+  revision = "a5b4c53f6e8bdcafa95a94671bf2d1203365858b"
 
 [[projects]]
   branch = "master"
@@ -591,6 +668,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "e35d2712112dfad8cee5a867a6377b475ee6e1176e3d16e2a8def54b8586adb3"
+  inputs-digest = "4c4a1294e9d2d61fe4f985ef49e945ad4286481a047104a872033dd76c2277f8"
   solver-name = "gps-cdcl"
   solver-version = 1

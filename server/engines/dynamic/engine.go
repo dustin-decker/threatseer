@@ -79,25 +79,27 @@ func NewDynamicRulesEngine() RulesEngine {
 	var dr Rules
 	if _, err := os.Stat(filename); os.IsNotExist(err) {
 		log.WithFields(log.Fields{"engine": "dynamic", "err": err, "filename": filename}).Warn("config not found, not using engine")
-	} else {
-		bytes, err := ioutil.ReadFile(filename)
-		if err != nil {
-			log.WithFields(log.Fields{"engine": "dynamic", "err": err, "filename": filename}).Fatal("could not read")
-		}
-		err = yaml.Unmarshal(bytes, &dr)
-		if err != nil {
-			log.WithFields(log.Fields{"engine": "dynamic", "err": err, "filename": filename}).Fatal("could not parse")
-		}
+		return e
+	}
+	bytes, err := ioutil.ReadFile(filename)
+	if err != nil {
+		log.WithFields(log.Fields{"engine": "dynamic", "err": err, "filename": filename}).Fatal("could not read")
+	}
+	err = yaml.Unmarshal(bytes, &dr)
+	if err != nil {
+		log.WithFields(log.Fields{"engine": "dynamic", "err": err, "filename": filename}).Fatal("could not parse")
 	}
 	e.Rules = dr
-	for _, rule := range dr {
+
+	// compile the rules
+	for i, rule := range dr {
 		compiledRule, err := yql.Rule(rule.Query)
-		if err != nil {
-			log.WithFields(log.Fields{"engine": "dynamic", "err": err, "filename": filename}).Fatal("could not compile rule")
+		if err != nil || compiledRule == nil {
+			log.WithFields(log.Fields{"engine": "dynamic", "err": err, "filename": filename, "rule": rule}).Fatal("could not compile rule")
 		}
-		rule.yql = compiledRule
+		dr[i].yql = compiledRule
 	}
-	e.Out = make(chan event.Event, 0)
+	e.Out = make(chan event.Event, 10)
 
 	return e
 }
