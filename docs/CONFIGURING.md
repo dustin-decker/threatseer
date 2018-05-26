@@ -9,11 +9,11 @@ When mTLS auth is added the server endpoint will be configurable.
 
 ## Daemon
 
-Daemon-level configuration options are in [`/config/daemon.yaml`](/config/daemon.yaml).
+Daemon-level configuration options are in [`/threatseer.yml`](threatseer.yaml).
 The daemon config is self-documented.
 
-## Logging
-Configure [`beat.yml`](/beat.yml) per [the docs](https://www.elastic.co/guide/en/beats/filebeat/current/configuring-output.html) or the documentation in [the file](/beat.yml).
+### Logging
+Configure [`threatseer.yml`](/threatseer.yml) per [the docs](https://www.elastic.co/guide/en/beats/filebeat/current/configuring-output.html) or the documentation in [the file](/threatseer.yml).
 
 ## Analysis Engines
 
