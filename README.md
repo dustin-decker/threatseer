@@ -43,28 +43,52 @@ successful blind remote code execution (RCE) callback
 
 ```json
 {
-  "Event": {
-    "Process": {
-      "exec_command_line": [
-        "sh",
-        "-c",
-        "dig +short ifjeow0234f90iwefo2odj.wat.lol"
-      ],
-      "exec_filename": "/bin/sh",
-      "type": 2
-    }
-  },
-  "container_id": "06cba6bc8583000803f75cd4ce88a9723497e716859eb820f35bef48582e9e3f",
-  "container_name": "/dazzling_darwin",
-  "credentials": {},
-  "id": "7d59493a8d9d4ccbee584940628c8bad5ad6a9de7b3762b3138bcab988957e95",
-  "image_id": "3fd9065eaf02feaf94d68376da52541925650b81698c53c6824d92ff63f98353",
-  "image_name": "alpine",
-  "process_pid": 3943,
-  "sensor_id": "9a608f32bc59f6d1b5ba579170fff34401ffd1840f3695f9e18a45eef7103125",
-  "sensor_monotime_nanos": 1517123007197660400,
-  "sensor_sequence_number": 223,
-  "time": "2018-01-28T18:04:04-06:00"
+   "@timestamp":"2018-05-26T15:06:14.397Z",
+   "src_ip":"127.0.0.1",
+   "event":{
+      "id":"714966143a853b3bf55ccb2683a3b6bcfcbf731f9318705485609d8ef7711b13",
+      "process_pid":3789,
+      "sensor_id":"49c921bc827b2aa9b5f20b0e65af9c3126c79221bac4f2b2a7edd7db7e3774aa",
+      "sensor_sequence_number":27623,
+      "sensor_monotime_nanos":5140132889275,
+      "Event":{
+         "Process":{
+            "type":2,
+            "exec_filename":"/usr/bin/dig",
+            "exec_command_line":[
+               "dig",
+               "+short",
+               "ifjeow0234f90iwefo2odj.wat.lol"
+            ]
+         }
+      }
+   },
+   "indicators":[
+      {
+         "Engine":"static",
+         "RuleName":"",
+         "IndicatorType":"risky_process",
+         "Description":"dig is a risky process often used for exfil / callback",
+         "ExtraInfo":"",
+         "Score":70
+      },
+      {
+         "Engine":"dynamic",
+         "RuleName":"insider_threat",
+         "IndicatorType":"custom",
+         "Description":"it's coming from inside the house!",
+         "ExtraInfo":"origin was 127.0.0.1",
+         "Score":60
+      },
+      {
+         "Engine":"profile",
+         "RuleName":"",
+         "IndicatorType":"abnormal_behavior",
+         "Description":"subject is behaving outside of its profile",
+         "ExtraInfo":"",
+         "Score":50
+      }
+   ]
 }
 ```
 
