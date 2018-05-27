@@ -112,7 +112,6 @@ Docs are sparse at the moment. Threatseer is still under heavy development.
 ## Roadmap
 
 - mutual TLS and automation for minting keys and certs
-- Add Profile Engine
 - Implement actions (for agent and server)
 - WebUI for interaction and response with events and alerts
 - Add some deployments templates (Swarm, K8s, helm, etc)
