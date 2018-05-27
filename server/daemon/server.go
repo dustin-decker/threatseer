@@ -19,8 +19,6 @@ import (
 	"flag"
 	"fmt"
 	"net"
-	"os"
-	"os/signal"
 	"time"
 
 	"github.com/elastic/beats/libbeat/beat"
@@ -38,11 +36,16 @@ import (
 // Server state
 type Server struct {
 	// threatsser stuff
-	Ctx    context.Context
-	Cancel context.CancelFunc
-	Beat   *beat.Beat
-	done   chan struct{}
-	Config config.Config
+	Beat         *beat.Beat
+	done         chan struct{}
+	Config       config.Config
+	stopPipeline chan struct{}
+
+	// contexts for clean shut down
+	grpcCtx           context.Context
+	grpcCtxCancel     context.CancelFunc
+	pipelineCtx       context.Context
+	pipelineCtxCancel context.CancelFunc
 }
 
 // New creates new Server object
@@ -52,9 +55,17 @@ func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 		return nil, fmt.Errorf("Error reading config file: %v", err)
 	}
 
+	grpcCtx, grpcCtxCancel := context.WithCancel(context.Background())
+	pipelineCtx, pipelineCtxCancel := context.WithCancel(context.Background())
+
 	bt := &Server{
-		done:   make(chan struct{}),
-		Config: config,
+		done:              make(chan struct{}),
+		stopPipeline:      make(chan struct{}),
+		Config:            config,
+		grpcCtx:           grpcCtx,
+		grpcCtxCancel:     grpcCtxCancel,
+		pipelineCtx:       pipelineCtx,
+		pipelineCtxCancel: pipelineCtxCancel,
 	}
 	return bt, nil
 }
@@ -62,10 +73,11 @@ func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 // Stop cleanly shuts down threatseer
 func (s *Server) Stop() {
 	// cancel current agent connections
-	s.Cancel()
-
-	// todo: send pipeline input shutdown signal
-	// and return when it's clear
+	s.grpcCtxCancel()
+	// stop the flow in the pipeline
+	s.stopPipeline <- struct{}{}
+	// shut down the pipeline
+	s.pipelineCtxCancel()
 }
 
 // Run is the entrypoint for starting the TCP server and GRPC client
@@ -74,21 +86,6 @@ func (s *Server) Stop() {
 func (s *Server) Run(b *beat.Beat) error {
 	flag.Parse()
 	log.SetFormatter(&log.JSONFormatter{})
-
-	ctx, cancel := context.WithCancel(context.Background())
-
-	// cancel context with ctrl-c interrupt
-	signals := make(chan os.Signal)
-	signal.Notify(signals, os.Interrupt)
-
-	go func() {
-		<-signals
-		cancel()
-	}()
-
-	s.Ctx = ctx
-	s.Cancel = cancel
-
 	logp.Info("launching tcp server")
 
 	// start tcp listener on all interfaces
@@ -103,9 +100,7 @@ func (s *Server) Run(b *beat.Beat) error {
 	log.WithFields(log.Fields{"listen_address": s.Config.ListenAddress}).Info("threatseer server listening for connections")
 
 	logp.Info("starting engine pipeline")
-	// create the network
-	eventChan := make(chan event.Event, 1000)
-	s.NewPipelineFlow(b, s.Config.NumberOfPipelines, eventChan)
+	eventChan := s.newPipelineFlow(b, s.Config.NumberOfPipelines)
 
 	log.Info("waiting for incoming TCP connections")
 
@@ -119,7 +114,7 @@ func (s *Server) Run(b *beat.Beat) error {
 		log.WithFields(log.Fields{"client_addr": clientAddr}).Info("connecting to gRPC sensor over incoming TCP connection")
 		var conn *grpc.ClientConn
 		// gRPC dial over incoming net.Conn
-		conn, err := grpc.Dial(":7777",
+		conn, err := grpc.DialContext(s.grpcCtx, ":7777",
 			grpc.WithInsecure(),
 			grpc.WithDialer(func(target string, timeout time.Duration) (net.Conn, error) {
 				return incomingConn, connErr
@@ -139,7 +134,7 @@ func (s *Server) handleConn(conn *grpc.ClientConn, eventChan chan event.Event, c
 
 	c := api.NewTelemetryServiceClient(conn)
 
-	stream, err := c.GetEvents(s.Ctx, &api.GetEventsRequest{
+	stream, err := c.GetEvents(s.grpcCtx, &api.GetEventsRequest{
 		Subscription: createSubscription(),
 	})
 

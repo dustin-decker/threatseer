@@ -1,6 +1,7 @@
 package profile
 
 import (
+	"context"
 	"time"
 
 	lru "github.com/hashicorp/golang-lru"
@@ -24,14 +25,14 @@ type Engine struct {
 	IsProfiling *lru.Cache
 
 	ProfileBuildingDuration time.Duration
+
+	ctx context.Context
 }
 
 // AnalyzeFromPipeline initiates the engine on the pipeline
 func (engine *Engine) AnalyzeFromPipeline(in chan event.Event) {
-	for {
-		// incoming event from the pipeline
-		e := <-in
-
+	defer close(engine.Out)
+	for e := range in {
 		// process profiling
 		processInfo := e.Event.GetProcess()
 		if processInfo != nil {
@@ -60,13 +61,13 @@ func (engine *Engine) AnalyzeFromPipeline(in chan event.Event) {
 				}
 			}
 		}
-		// make event available to the next pipeline engine
+
 		engine.Out <- e
 	}
 }
 
 // NewProfileEngine returns engine with configs loaded
-func NewProfileEngine(c config.Config) Engine {
+func NewProfileEngine(ctx context.Context, c config.Config) Engine {
 	lruCache, err := lru.New(50000)
 	if err != nil {
 		log.WithFields(log.Fields{"engine": "profile", "err": err}).Fatal("could not make LRU cache")
@@ -80,6 +81,7 @@ func NewProfileEngine(c config.Config) Engine {
 		EventFilter:             cf.NewCuckooFilter(c.ProfileEventFilterCacheSize),
 		IsProfiling:             lruCache,
 		ProfileBuildingDuration: c.ProfileBuildingDuration,
+		ctx: ctx,
 	}
 
 	return e

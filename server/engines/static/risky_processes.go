@@ -10,9 +10,10 @@ import (
 )
 
 type riskyProcess struct {
-	Name   string
-	Reason string
-	Score  int
+	Name      string `yaml:"name"`
+	Reason    string `yaml:"reason"`
+	ExtraInfo string `yaml:"extra_info"`
+	Score     int    `yaml:"score"`
 }
 
 func (rp *riskyProcess) Indicator() event.Indicator {
@@ -20,6 +21,7 @@ func (rp *riskyProcess) Indicator() event.Indicator {
 		Engine:        "static",
 		IndicatorType: "risky_process",
 		Description:   fmt.Sprintf("%s is a risky process often used for %s", rp.Name, rp.Reason),
+		ExtraInfo:     rp.ExtraInfo,
 		Score:         rp.Score,
 	}
 }

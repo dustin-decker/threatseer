@@ -17,10 +17,7 @@ type Shipper struct {
 
 // PublishFromPipeline is the entrypoint from the flow pipeline
 func (s *Shipper) PublishFromPipeline(in chan event.Event) {
-	for {
-		// incoming event from the pipeline
-		e := <-in
-
+	for e := range in {
 		evnt := beat.Event{
 			Timestamp: time.Now(),
 			Fields: common.MapStr{

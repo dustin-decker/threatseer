@@ -1,6 +1,7 @@
 package static
 
 import (
+	"context"
 	"io/ioutil"
 	"os"
 
@@ -15,14 +16,13 @@ import (
 type RulesEngine struct {
 	Out            chan event.Event
 	riskyProcesses []riskyProcess
+	ctx            context.Context
 }
 
 // AnalyzeFromPipeline initiates the engine on the pipeline
 func (engine *RulesEngine) AnalyzeFromPipeline(in chan event.Event) {
-	for {
-		// incoming event from the pipeline
-		e := <-in
-
+	defer close(engine.Out)
+	for e := range in {
 		// process checks
 		processInfo := e.Event.GetProcess()
 		if processInfo != nil {
@@ -33,13 +33,12 @@ func (engine *RulesEngine) AnalyzeFromPipeline(in chan event.Event) {
 			}
 		}
 
-		// make event available to the next pipeline engine
 		engine.Out <- e
 	}
 }
 
 // NewStaticRulesEngine returns engine with configs loaded
-func NewStaticRulesEngine() RulesEngine {
+func NewStaticRulesEngine(ctx context.Context) RulesEngine {
 	var e RulesEngine
 
 	// load risky_process.yaml information
@@ -59,6 +58,7 @@ func NewStaticRulesEngine() RulesEngine {
 	}
 	e.riskyProcesses = rp
 	e.Out = make(chan event.Event, 10)
+	e.ctx = ctx
 
 	return e
 }

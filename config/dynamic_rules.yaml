@@ -1,7 +1,8 @@
 ---
 - 
   name: insider_threat
-  description: "IT'S COMING FROM INSIDE THE HOUSE!"
+  description: "it's coming from inside the house!"
+  extra_info: "local origin sensor running suspicious executable"
   query: ClientAddr='127.0.0.1'
   actions: 
     - alert

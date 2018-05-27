@@ -8,9 +8,8 @@ threatseer:
   listen_address: 0.0.0.0:8081
 
   profile_building_duration: 60m
-  # 8000000 events consumes about 10MB of RAM. Don't go lower.
-  profile_event_filter_cache_size: 8000000
-
+  # 10,000,000 events consumes less than 10MB of RAM. Don't go lower.
+  profile_event_filter_cache_size: 10000000
 
 #================================ General ======================================
 

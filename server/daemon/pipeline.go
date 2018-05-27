@@ -13,16 +13,22 @@ import (
 	"github.com/dustin-decker/threatseer/server/event"
 )
 
-// NewPipelineFlow wires up the engine pipeline network
-func (s *Server) NewPipelineFlow(b *beat.Beat, numPipelines uint, in chan event.Event) {
+// newPipelineFlow wires up the engine pipeline network
+func (s *Server) newPipelineFlow(b *beat.Beat, numPipelines uint) (eventChan chan event.Event) {
 
-	staticRulesEngine := static.NewStaticRulesEngine()
+	eventChan = make(chan event.Event, 1000)
+	go func() {
+		<-s.stopPipeline
+		close(eventChan)
+	}()
+
+	staticRulesEngine := static.NewStaticRulesEngine(s.pipelineCtx)
 	log.WithFields(log.Fields{"engine": "static"}).Info("started engine")
 
-	dynamicRulesEngine := dynamic.NewDynamicRulesEngine()
+	dynamicRulesEngine := dynamic.NewDynamicRulesEngine(s.pipelineCtx)
 	log.WithFields(log.Fields{"engine": "dynamic"}).Info("started engine")
 
-	profileEngine := profile.NewProfileEngine(s.Config)
+	profileEngine := profile.NewProfileEngine(s.pipelineCtx, s.Config)
 	log.WithFields(log.Fields{"engine": "profile"}).Info("started engine")
 
 	shipperEngine := shipper.NewShipperEngine(b)
@@ -37,7 +43,7 @@ func (s *Server) NewPipelineFlow(b *beat.Beat, numPipelines uint, in chan event.
 	for w = 0; w <= numPipelines; w++ {
 		// add engines to the pipeline network
 		// each one feeds the next through a channel
-		go staticRulesEngine.AnalyzeFromPipeline(in)
+		go staticRulesEngine.AnalyzeFromPipeline(eventChan)
 
 		go dynamicRulesEngine.AnalyzeFromPipeline(staticRulesEngine.Out)
 
@@ -46,4 +52,6 @@ func (s *Server) NewPipelineFlow(b *beat.Beat, numPipelines uint, in chan event.
 		// Final output without an output channel terminates the pipeline network
 		go shipperEngine.PublishFromPipeline(profileEngine.Out)
 	}
+
+	return
 }
