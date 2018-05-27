@@ -66,7 +66,7 @@ func joinConn(conn1, conn2 net.Conn) chan error {
 	return connErrChan
 }
 
-func establishUplink() {
+func establishUplink(server string) {
 	// exit with ctrl-c
 	signals := make(chan os.Signal)
 	signal.Notify(signals, os.Interrupt)
@@ -84,18 +84,18 @@ func establishUplink() {
 		log.Error(err)
 		log.Warn("reconnecting in 5 seconds")
 		time.Sleep(5 * time.Second)
-		establishUplink()
+		establishUplink(server)
 	}
 	defer sensorConn.Close()
 	log.Info("connecting to remote")
 
-	serverConn, err := net.DialTimeout("tcp", "127.0.0.1:8081", time.Second*5)
+	serverConn, err := net.DialTimeout("tcp", server, time.Second*5)
 	if err != nil {
 		log.Println(err)
 		sensorConn.Close()
 		log.Warn("reconnecting in 5 seconds")
 		time.Sleep(5 * time.Second)
-		establishUplink()
+		establishUplink(server)
 	}
 	defer serverConn.Close()
 
@@ -114,7 +114,7 @@ func establishUplink() {
 	}
 	log.Warn("reconnecting in 5 seconds")
 	time.Sleep(5 * time.Second)
-	establishUplink()
+	establishUplink(server)
 }
 
 func waitForSensor() {
@@ -128,6 +128,8 @@ func waitForSensor() {
 }
 
 func main() {
+	var server string
+	flag.StringVar(&server, "server", "127.0.0.1:8081", "remote server to send telemetry to")
 	flag.Parse()
 	flag.Lookup("logtostderr").Value.Set("true") // disable logging to file
 	log.SetFormatter(&log.JSONFormatter{})
@@ -138,7 +140,7 @@ func main() {
 
 	waitForSensor()
 
-	establishUplink()
+	establishUplink(server)
 
 	log.Warn("goodbye")
 }

@@ -2,8 +2,7 @@
 
 # agent
 
-Nothing required except server endpoint (currently hardcoded to localhost).
-When mTLS auth is added the server endpoint will be configurable.
+Use `-server` flag to specifiy a remote server (defaults to `127.0.0.1:8081`).
 
 # server
 
