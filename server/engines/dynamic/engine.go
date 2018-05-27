@@ -1,6 +1,7 @@
 package dynamic
 
 import (
+	"context"
 	"io/ioutil"
 	"os"
 
@@ -14,28 +15,28 @@ import (
 
 // Rules are user defined rules loaded at run time from a yaml file
 type Rules []struct {
-	Name          string   `yaml:"name"`
-	Description   string   `yaml:"description"`
-	EventType     string   `yaml:"event_type"`
-	Query         string   `yaml:"query"`
-	Actions       []string `yaml:"actions"`
-	IndicatorType string   `yaml:"indicator_type"`
-	Score         int      `yaml:"score"`
-	yql           yql.Ruler
+	Name          string    `yaml:"name"`
+	Description   string    `yaml:"description"`
+	ExtraInfo     string    `yaml:"extra_info"`
+	EventType     string    `yaml:"event_type"`
+	Query         string    `yaml:"query"`
+	Actions       []string  `yaml:"actions"`
+	IndicatorType string    `yaml:"indicator_type"`
+	Score         int       `yaml:"score"`
+	yql           yql.Ruler // compiled AST of query from ANTLR
 }
 
 // RulesEngine stores engine state
 type RulesEngine struct {
 	Out   chan event.Event
 	Rules Rules
+	ctx   context.Context
 }
 
 // AnalyzeFromPipeline initiates the engine on the pipeline
 func (engine *RulesEngine) AnalyzeFromPipeline(in chan event.Event) {
-	for {
-		// incoming event from the pipeline
-		e := <-in
-
+	defer close(engine.Out)
+	for e := range in {
 		// convert struct to map[string]interface{}
 		evnt := structs.Map(e)
 
@@ -57,22 +58,25 @@ func (engine *RulesEngine) AnalyzeFromPipeline(in chan event.Event) {
 							Engine:        "dynamic",
 							IndicatorType: rule.IndicatorType,
 							Description:   rule.Description,
+							ExtraInfo:     rule.ExtraInfo,
 							Score:         rule.Score,
 							RuleName:      rule.Name,
 						},
 					)
 				}
 			}
+
 		}
 
-		// make event available to the next pipeline engine
 		engine.Out <- e
 	}
 }
 
 // NewDynamicRulesEngine returns engine with configs loaded
-func NewDynamicRulesEngine() RulesEngine {
+func NewDynamicRulesEngine(ctx context.Context) RulesEngine {
 	var e RulesEngine
+
+	e.ctx = ctx
 
 	// load risky_process.yaml information
 	filename := "config/dynamic_rules.yaml"
