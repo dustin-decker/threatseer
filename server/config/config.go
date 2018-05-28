@@ -10,10 +10,12 @@ type Config struct {
 	ProfileBuildingDuration     time.Duration `config:"profile_building_duration"`
 	ProfileEventFilterCacheSize uint          `config:"profile_event_filter_cache_size"`
 	// TLS options
-	TLSEnabled        bool   `config:"tls_enabled"`
-	TLSRootCAPath     string `config:"tls_root_ca_path"`
-	TLSServerKeyPath  string `config:"tls_server_key_path"`
-	TLSServerCertPath string `config:"tls_server_cert_path"`
+	TLSServerName         string `config:"tls_server_name"`
+	TLSEnabled            bool   `config:"tls_enabled"`
+	TLSRootCAPath         string `config:"tls_root_ca_path"`
+	TLSServerKeyPath      string `config:"tls_server_key_path"`
+	TLSServerCertPath     string `config:"tls_server_cert_path"`
+	TLSOverrideCommonName string `config:"tls_override_common_name"`
 }
 
 // DefaultConfig threatseer config

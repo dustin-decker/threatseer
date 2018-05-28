@@ -120,7 +120,7 @@ func establishUplink(c cfg) {
 				Rand:         randReader,
 				RootCAs:      certPool,
 				Certificates: []tls.Certificate{cert},
-				ServerName:   "threatseer",
+				ServerName:   c.TLSOverrideCommonName,
 				CipherSuites: []uint16{
 					tls.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
 					tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
@@ -178,11 +178,12 @@ func waitForSensor() {
 }
 
 type cfg struct {
-	Server            string `yaml:"server"`
-	TLSEnabled        bool   `yaml:"tls_enabled"`
-	TLSRootCAPath     string `yaml:"tls_root_ca_path"`
-	TLSServerKeyPath  string `yaml:"tls_server_key_path"`
-	TLSServerCertPath string `yaml:"tls_server_cert_path"`
+	Server                string `yaml:"server"`
+	TLSEnabled            bool   `yaml:"tls_enabled"`
+	TLSRootCAPath         string `yaml:"tls_root_ca_path"`
+	TLSServerKeyPath      string `yaml:"tls_server_key_path"`
+	TLSServerCertPath     string `yaml:"tls_server_cert_path"`
+	TLSOverrideCommonName string `yaml:"tls_override_common_name"`
 }
 
 func main() {
@@ -192,6 +193,7 @@ func main() {
 	flag.StringVar(&c.TLSRootCAPath, "ca", "", "custom certificate authority for the remote server to send telemetry to")
 	flag.StringVar(&c.TLSServerKeyPath, "key", "", "key for agent")
 	flag.StringVar(&c.TLSServerCertPath, "cert", "", "certificate for agent")
+	flag.StringVar(&c.TLSOverrideCommonName, "cn", "", "override the expected common name of the remote server")
 
 	flag.Parse()
 	flag.Lookup("logtostderr").Value.Set("true") // disable logging to file

@@ -17,6 +17,8 @@ Usage of ./bin/agent:
     	certificate for agent
   -key string
     	key for agent
+  -cn string
+    	override the expected common name of the remote server
 ```
 
 See [/docs/TLS.md](/docs/TLS.md) for information on generating certs.

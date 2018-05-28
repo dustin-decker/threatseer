@@ -15,6 +15,9 @@ threatseer:
   tls_root_ca_path: /run/secrets/threatseer_CA.crt
   tls_server_cert_path: /run/secrets/threatseer.crt
   tls_server_key_path: /run/secrets/threatseer.key
+  ## use this option (with certs of the same CN) if you cannot rely on a stable 
+  ## common name for your agents
+  tls_override_common_name: agent
 
 
 #================================ General ======================================

@@ -121,7 +121,7 @@ func (s *Server) Run(b *beat.Beat) error {
 		config := tls.Config{
 			Certificates: []tls.Certificate{cert},
 			RootCAs:      certPool,
-			ServerName:   "agent",
+			ServerName:   s.Config.TLSOverrideCommonName,
 			CipherSuites: []uint16{
 				tls.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
 				tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
