@@ -6,6 +6,7 @@ import (
 	"github.com/golang/protobuf/ptypes/wrappers"
 )
 
+// this is the capsule8 sensor telemetry subscription
 func createSubscription() *api.Subscription {
 	processEvents := []*api.ProcessEventFilter{
 		&api.ProcessEventFilter{
