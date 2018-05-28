@@ -22,7 +22,15 @@ The agent collects security telemetry which is offloaded to a server for behavio
 
 ### Server features
 
-The server component uses several behavioral analysis engines for scoring events and has several JSON telemetry output methods available, provided by [libbeat](https://www.elastic.co/products/beats):
+The server component uses several behavioral analysis engines for scoring events and has several JSON telemetry output methods available:
+
+#### Behavioral Analysis Engines
+
+- Profile - automatic execution behavior profile generated for container image or process lifecycle
+- Static - risky processes, file/directory integrity monitoring (todo), known IOCs (todo)
+- Dynamic - custom queries
+
+#### Telemetry outputs
 
 - Elasticsearch
 - Kafka
