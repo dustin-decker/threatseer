@@ -108,15 +108,6 @@ Docs are sparse at the moment. Threatseer is still under heavy development.
 ### [docs/HACKING.md](docs/HACKING.md)
 ### [docs/CONFIGURING.md](docs/CONFIGURING.md)
 
-
-## Roadmap
-
-- mutual TLS and automation for minting keys and certs
-- Implement actions (for agent and server)
-- WebUI for interaction and response with events and alerts
-- Add some deployments templates (Swarm, K8s, helm, etc)
-- Add Classification Engine
-
 ## Acknowledgements
 
 - [Capsule8](https://capsule8.com/) for their [opensource library](https://github.com/capsule8/capsule8) that made the agent sensor implementation possible. They're the ones doing the most innovation and work, and they have an [interesting product](https://capsule8.com/product/#platform) that makes use of the library.
