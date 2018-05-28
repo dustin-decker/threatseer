@@ -8,9 +8,9 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// ProcessStats just logs process stats at intervals
+// processStats just logs process stats at intervals
 // Eventually will emit processing stats too.
-func ProcessStats() {
+func processStats() {
 	for {
 		var m runtime.MemStats
 		runtime.ReadMemStats(&m)

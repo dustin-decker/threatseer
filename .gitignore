@@ -9,3 +9,4 @@ server/query_stream_test.go
 config/config.go
 bin/logs/threatseer
 docker-elk
+out

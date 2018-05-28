@@ -15,8 +15,12 @@
 package main
 
 import (
+	"crypto/rand"
+	"crypto/tls"
+	"crypto/x509"
 	"flag"
 	"io"
+	"io/ioutil"
 	"net"
 	"os"
 	"os/signal"
@@ -66,7 +70,7 @@ func joinConn(conn1, conn2 net.Conn) chan error {
 	return connErrChan
 }
 
-func establishUplink(server string) {
+func establishUplink(c cfg) {
 	// exit with ctrl-c
 	signals := make(chan os.Signal)
 	signal.Notify(signals, os.Interrupt)
@@ -84,18 +88,64 @@ func establishUplink(server string) {
 		log.Error(err)
 		log.Warn("reconnecting in 5 seconds")
 		time.Sleep(5 * time.Second)
-		establishUplink(server)
+		establishUplink(c)
 	}
 	defer sensorConn.Close()
 	log.Info("connecting to remote")
 
-	serverConn, err := net.DialTimeout("tcp", server, time.Second*5)
-	if err != nil {
-		log.Println(err)
-		sensorConn.Close()
-		log.Warn("reconnecting in 5 seconds")
-		time.Sleep(5 * time.Second)
-		establishUplink(server)
+	var serverConn net.Conn
+	var cert tls.Certificate
+	if c.TLSEnabled {
+		certPool := x509.NewCertPool()
+		var bs []byte
+		bs, err = ioutil.ReadFile(c.TLSRootCAPath)
+		if err != nil {
+			log.WithFields(log.Fields{"err": err, "filepath": c.TLSRootCAPath}).Fatal("failed read CA certs")
+		}
+		ok := certPool.AppendCertsFromPEM(bs)
+		if !ok {
+			log.WithFields(log.Fields{"err": err}).Fatal("failed to add CA certs")
+		}
+
+		if len(c.TLSServerCertPath) > 0 && len(c.TLSServerKeyPath) > 0 {
+			cert, err = tls.LoadX509KeyPair(c.TLSServerCertPath, c.TLSServerKeyPath)
+			if err != nil {
+				log.WithFields(log.Fields{"err": err}).Fatal("error loading server keys")
+			}
+		}
+
+		randReader := rand.Reader
+		serverConn, err = tls.Dial("tcp", c.Server,
+			&tls.Config{
+				Rand:         randReader,
+				RootCAs:      certPool,
+				Certificates: []tls.Certificate{cert},
+				ServerName:   "threatseer",
+				CipherSuites: []uint16{
+					tls.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
+					tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
+					tls.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,
+				},
+			},
+		)
+		if err != nil {
+			if err != nil {
+				log.Println(err)
+				sensorConn.Close()
+				log.Warn("reconnecting in 5 seconds")
+				time.Sleep(5 * time.Second)
+				establishUplink(c)
+			}
+		}
+	} else {
+		serverConn, err = net.DialTimeout("tcp", c.Server, time.Second*5)
+		if err != nil {
+			log.Println(err)
+			sensorConn.Close()
+			log.Warn("reconnecting in 5 seconds")
+			time.Sleep(5 * time.Second)
+			establishUplink(c)
+		}
 	}
 	defer serverConn.Close()
 
@@ -114,7 +164,7 @@ func establishUplink(server string) {
 	}
 	log.Warn("reconnecting in 5 seconds")
 	time.Sleep(5 * time.Second)
-	establishUplink(server)
+	establishUplink(c)
 }
 
 func waitForSensor() {
@@ -127,9 +177,22 @@ func waitForSensor() {
 	}
 }
 
+type cfg struct {
+	Server            string `yaml:"server"`
+	TLSEnabled        bool   `yaml:"tls_enabled"`
+	TLSRootCAPath     string `yaml:"tls_root_ca_path"`
+	TLSServerKeyPath  string `yaml:"tls_server_key_path"`
+	TLSServerCertPath string `yaml:"tls_server_cert_path"`
+}
+
 func main() {
-	var server string
-	flag.StringVar(&server, "server", "127.0.0.1:8081", "remote server to send telemetry to")
+	var c cfg
+	flag.StringVar(&c.Server, "server", "127.0.0.1:8081", "remote server to send telemetry to")
+	flag.BoolVar(&c.TLSEnabled, "tls", false, "enable tls")
+	flag.StringVar(&c.TLSRootCAPath, "ca", "", "custom certificate authority for the remote server to send telemetry to")
+	flag.StringVar(&c.TLSServerKeyPath, "key", "", "key for agent")
+	flag.StringVar(&c.TLSServerCertPath, "cert", "", "certificate for agent")
+
 	flag.Parse()
 	flag.Lookup("logtostderr").Value.Set("true") // disable logging to file
 	log.SetFormatter(&log.JSONFormatter{})
@@ -140,7 +203,7 @@ func main() {
 
 	waitForSensor()
 
-	establishUplink(server)
+	establishUplink(c)
 
 	log.Warn("goodbye")
 }
