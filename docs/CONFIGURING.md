@@ -2,9 +2,28 @@
 
 # agent
 
-Use `-server` flag to specifiy a remote server (defaults to `127.0.0.1:8081`).
+Important flags:
+
+```
+$ ./bin/agent -h
+Usage of ./bin/agent:
+  -server string
+    	remote server to send telemetry to (default "127.0.0.1:8081")
+  -tls
+    	enable tls
+  -ca string
+    	custom certificate authority for the remote server to send telemetry to
+  -cert string
+    	certificate for agent
+  -key string
+    	key for agent
+```
+
+See [/docs/TLS.md](/docs/TLS.md) for information on generating certs.
 
 # server
+
+See [/docs/TLS.md](/docs/TLS.md) for information on generating certs.
 
 ## Daemon
 

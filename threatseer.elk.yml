@@ -11,6 +11,11 @@ threatseer:
   # 10,000,000 events consumes less than 10MB of RAM. Don't go lower.
   profile_event_filter_cache_size: 10000000
 
+  # tls_enabled: true
+  # tls_root_ca_path: /run/secrets/threatseer_CA.crt
+  # tls_server_cert_path: /run/secrets/threatseer.crt
+  # tls_server_key_path: /run/secrets/threatseer.key
+
 #================================ General ======================================
 
 # The name of the shipper that publishes the network data. It can be used to group

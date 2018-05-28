@@ -16,8 +16,12 @@ package daemon
 
 import (
 	"context"
+	"crypto/rand"
+	"crypto/tls"
+	"crypto/x509"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"net"
 	"time"
 
@@ -59,9 +63,9 @@ func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 	pipelineCtx, pipelineCtxCancel := context.WithCancel(context.Background())
 
 	bt := &Server{
+		Config:            config,
 		done:              make(chan struct{}),
 		stopPipeline:      make(chan struct{}),
-		Config:            config,
 		grpcCtx:           grpcCtx,
 		grpcCtxCancel:     grpcCtxCancel,
 		pipelineCtx:       pipelineCtx,
@@ -91,10 +95,52 @@ func (s *Server) Run(b *beat.Beat) error {
 	// start tcp listener on all interfaces
 	// note that each connection consumes a file descriptor
 	// you may need to increase your fd limits if you have many concurrent clients
-	ln, err := net.Listen("tcp", s.Config.ListenAddress)
-	if err != nil {
-		log.WithFields(log.Fields{"err": err}).Error("could not listen")
-		return err
+	var ln net.Listener
+	var err error
+	var cert tls.Certificate
+	if s.Config.TLSEnabled {
+		log.Info("TLS is enabled")
+		certPool := x509.NewCertPool()
+		var bs []byte
+		bs, err = ioutil.ReadFile(s.Config.TLSRootCAPath)
+		if err != nil {
+			log.WithFields(log.Fields{"err": err, "filepath": s.Config.TLSRootCAPath}).Error("failed read CA certs")
+			return err
+		}
+		ok := certPool.AppendCertsFromPEM(bs)
+		if !ok {
+			log.WithFields(log.Fields{"err": err}).Error("failed to add CA certs")
+			return err
+		}
+
+		cert, err = tls.LoadX509KeyPair(s.Config.TLSServerCertPath, s.Config.TLSServerKeyPath)
+		if err != nil {
+			log.WithFields(log.Fields{"err": err}).Error("error loading server keys")
+			return err
+		}
+		config := tls.Config{
+			Certificates: []tls.Certificate{cert},
+			RootCAs:      certPool,
+			ServerName:   "agent",
+			CipherSuites: []uint16{
+				tls.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
+				tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
+				tls.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,
+			},
+		}
+		config.Rand = rand.Reader
+
+		ln, err = tls.Listen("tcp", s.Config.ListenAddress, &config)
+		if err != nil {
+			log.WithFields(log.Fields{"err": err}).Error("could not listen")
+			return err
+		}
+	} else {
+		ln, err = net.Listen("tcp", s.Config.ListenAddress)
+		if err != nil {
+			log.WithFields(log.Fields{"err": err}).Error("could not listen")
+			return err
+		}
 	}
 	defer ln.Close()
 	log.WithFields(log.Fields{"listen_address": s.Config.ListenAddress}).Info("threatseer server listening for connections")
@@ -104,7 +150,7 @@ func (s *Server) Run(b *beat.Beat) error {
 
 	log.Info("waiting for incoming TCP connections")
 
-	go ProcessStats()
+	go processStats()
 
 	for {
 		// Accept blocks until there is an incoming TCP connection
@@ -115,10 +161,10 @@ func (s *Server) Run(b *beat.Beat) error {
 		var conn *grpc.ClientConn
 		// gRPC dial over incoming net.Conn
 		conn, err := grpc.DialContext(s.grpcCtx, ":7777",
-			grpc.WithInsecure(),
 			grpc.WithDialer(func(target string, timeout time.Duration) (net.Conn, error) {
 				return incomingConn, connErr
 			}),
+			grpc.WithInsecure(),
 		)
 		if err != nil {
 			log.WithFields(log.Fields{"err": err, "client_addr": clientAddr}).Error("could not connect to sensor")
