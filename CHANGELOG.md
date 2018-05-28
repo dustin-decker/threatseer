@@ -1,3 +1,21 @@
+# 0.3.0
+
+BACKWARDS INCOMPATIBILITIES:
+
+FEATURES:
+
+- added mutual TLS support ([#15](https://github.com/dustin-decker/threatseer/pull/15))
+    - enabled configurable server endpoint for agent
+
+IMPROVEMENTS:
+
+- exposed some Profile Engine tunables 
+- use LRU cache for tracking ongoing execution profiling ([#12](https://github.com/dustin-decker/threatseer/issues/12))
+
+BUG FIXES:
+
+None
+
 # 0.2.0
 
 BACKWARDS INCOMPATIBILITIES:

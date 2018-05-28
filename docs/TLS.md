@@ -24,3 +24,5 @@
     ```bash
     bin/certstrap sign --CA "threatseer CA" agent
     ```
+
+The files will be placed in a directory called `out`.
