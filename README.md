@@ -1,6 +1,6 @@
 # threatseer <img align="right" src="docs/images/gopher.svg" width="200">
 
-Threatseer is a lightweight agent-based security telemetry solution for Linux that can be deployed to datacenters, clouds, orchestrators, and workstations.
+Threatseer is a lightweight agent-based security telemetry solution for Linux.
 
 ### Try running threatseer [with Docker](docs/RUN_IT.md)
 
@@ -10,7 +10,7 @@ Threatseer is a lightweight agent-based security telemetry solution for Linux th
 
 ### Agent features
 
-The agent collects security telemetry which is offloaded to a server for behavioral analysis.
+The agent collects security telemetry which is offloaded to a server for behavioral analysis and the rest.
 
 - event-driven structured data of important system events
   - container lifecycle
@@ -55,10 +55,11 @@ successful blind remote code execution (RCE) callback
    "src_ip":"127.0.0.1",
    "event":{
       "id":"714966143a853b3bf55ccb2683a3b6bcfcbf731f9318705485609d8ef7711b13",
+      "container_name": "/cranky_kowalevski",
+      "image_id": "3fd9065eaf02feaf94d68376da52541925650b81698c53c6824d92ff63f98353",
+      "image_name": "alpine",
       "process_pid":3789,
       "sensor_id":"49c921bc827b2aa9b5f20b0e65af9c3126c79221bac4f2b2a7edd7db7e3774aa",
-      "sensor_sequence_number":27623,
-      "sensor_monotime_nanos":5140132889275,
       "Event":{
          "Process":{
             "type":2,

@@ -14,15 +14,15 @@ The server's analysis engines each contribute a risk score to an event as it flo
 
 ### Static Rules Engine
 
-The Static Rules Engine has hard-coded, high performance checks. Currently it checks for known risky processes that are often triggered during RCE attempts.
+The Static Analysis Engine has configurable checks such as risky proceses, file/directory integrity monitoring (todo), and known IOCs (todo).
 
 ### Dynamic Rules Engine
 
 The Dynamic Rules Engine allows for the user to prove custom query-based rules that will apply a score and an action to the events matched.
 
-### Profile Engine (todo)
+### Profile Engine
 
-Automatically generates execution profile for binaries or container image ID (if applicable). Applies a positive or negative score to the event depending on if the behavior is outside, or inside the profile.
+Automatically generates execution profile for the best reliable identifier available (container id or process id right now). Applies a positive or negative score to the event depending on if the behavior is outside, or inside the profile.
 
 ### Classification Engine (todo)
 
