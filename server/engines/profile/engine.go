@@ -17,12 +17,12 @@ type Engine struct {
 	// pipeline output
 	Out chan event.Event
 
-	// cuckoo filter for if the application/image/whatever has been profiled
-	IsProfiledFilter *cf.CuckooFilter
 	// cuckoo filter for if the event is present in the profile
 	EventFilter *cf.CuckooFilter
 	// tracks when profiling started so the application can be added to the IsProfiledFilter
 	IsProfiling *lru.Cache
+	// tracks if the application/image/whatever has been profiled
+	IsProfiled *lru.Cache
 
 	ProfileBuildingDuration time.Duration
 
@@ -68,18 +68,20 @@ func (engine *Engine) AnalyzeFromPipeline(in chan event.Event) {
 
 // NewProfileEngine returns engine with configs loaded
 func NewProfileEngine(ctx context.Context, c config.Config) Engine {
-	lruCache, err := lru.New(50000)
+	profilingLRUCache, err := lru.New(50000)
+	if err != nil {
+		log.WithFields(log.Fields{"engine": "profile", "err": err}).Fatal("could not make LRU cache")
+	}
+	profiledLRUCache, err := lru.New(100000)
 	if err != nil {
 		log.WithFields(log.Fields{"engine": "profile", "err": err}).Fatal("could not make LRU cache")
 	}
 
 	e := Engine{
-		Out: make(chan event.Event, 10),
-		// 10000 subject capacity
-		IsProfiledFilter: cf.NewCuckooFilter(100000),
-		// 4000 nodes * 2000 eventProfiles per node = 8000000
+		Out:                     make(chan event.Event, 10),
+		IsProfiled:              profiledLRUCache,
 		EventFilter:             cf.NewCuckooFilter(c.ProfileEventFilterCacheSize),
-		IsProfiling:             lruCache,
+		IsProfiling:             profilingLRUCache,
 		ProfileBuildingDuration: c.ProfileBuildingDuration,
 		ctx: ctx,
 	}

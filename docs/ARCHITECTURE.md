@@ -12,7 +12,7 @@ The server's analysis engines each contribute a risk score to an event as it flo
   <img src="images/engine_pipeline.svg" width="100%"/>
 </p>
 
-### Static Rules Engine
+### Static Analysis Engine
 
 The Static Analysis Engine has configurable checks such as risky proceses, file/directory integrity monitoring (todo), and known IOCs (todo).
 

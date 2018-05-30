@@ -22,32 +22,39 @@ func (e *Engine) profileExecEvent(evnt event.Event, cmd []string) int {
 	eventProfile := []byte(bestIdentifier + strings.Join(cmd, " "))
 
 	// if subject has been profiled
-	if e.IsProfiledFilter.Lookup([]byte(bestIdentifier)) {
-		// if event has not been seen before, return a positive risk indicator
-		if !e.EventFilter.Lookup(eventProfile) {
-			return 50
+	if _, subjectHasBeenProfiled := e.IsProfiled.Get(bestIdentifier); subjectHasBeenProfiled {
+		// if the event profile has been seen before
+		if e.EventFilter.Lookup(eventProfile) {
+			// return a negative risk indicator
+			return -50
 		}
-		// it has been seen in the profile, so return a negative risk indicator
-		return -50
+		// if the event profile has not been seen
+		// return a positive risk indicator
+		return 50
 	}
 
-	// if subject has not been profiled, mark it as profiling now, and insert this eventProfile
-	subjectExists := e.IsProfiling.Contains(bestIdentifier)
-	if !subjectExists {
+	// if subject has not been profiled
+	_, subjectIsProfiling := e.IsProfiling.Get(bestIdentifier)
+	if !subjectIsProfiling {
+		// mark it as currently profiling
 		e.IsProfiling.Add(bestIdentifier, time.Now())
+		// insert this event profile
 		e.EventFilter.Insert(eventProfile)
+		// return a neutral risk indicator
 		return 0
 	}
 
-	// if subject has been profiled over the req'd time period,
-	// add the last eventProfile,
-	// add it to the IsProfiledFilter,
-	// and remove from IsProfiling map
+	// if subject has been profiled over the req'd time period
 	startTime, ok := e.IsProfiling.Get(bestIdentifier)
 	if ok && time.Since(startTime.(time.Time)) > e.ProfileBuildingDuration {
-		log.WithFields(log.Fields{"engine": "profile", "identifier": bestIdentifier}).Error("done profiling subject")
+		log.WithFields(log.Fields{"engine": "profile",
+			"identifier": bestIdentifier,
+			"duration":   e.ProfileBuildingDuration}).Error("done profiling subject")
+		// add the last eventProfile
 		e.EventFilter.Insert(eventProfile)
-		e.IsProfiledFilter.Insert([]byte(bestIdentifier))
+		// add it to the IsProfiled LRU cache
+		e.IsProfiled.Add(bestIdentifier, time.Now())
+		// remove from IsProfiling LRU cache
 		e.IsProfiling.Remove(bestIdentifier)
 		return 0
 	}
