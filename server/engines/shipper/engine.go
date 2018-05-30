@@ -18,11 +18,16 @@ type Shipper struct {
 // PublishFromPipeline is the entrypoint from the flow pipeline
 func (s *Shipper) PublishFromPipeline(in chan event.Event) {
 	for e := range in {
+		var riskScore int
+		for _, indicator := range e.Indicators {
+			riskScore = riskScore + indicator.Score
+		}
 		evnt := beat.Event{
 			Timestamp: time.Now(),
 			Fields: common.MapStr{
 				"event":      e.Event,
 				"indicators": e.Indicators,
+				"risk_score": riskScore,
 				"src_ip":     e.ClientAddr,
 			},
 		}
