@@ -1,4 +1,4 @@
-# threatseer <img align="right" src="docs/images/gopher.svg" width="200">
+# threatseer <img align="right" src="docs/images/gopher.svg" width="25%">
 
 Threatseer is a lightweight agent-based security telemetry solution for Linux.
 
