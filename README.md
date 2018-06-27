@@ -22,6 +22,8 @@ The agent collects security telemetry which is offloaded to a server for behavio
 
 ### Server features
 
+<img align="right" src="docs/images/global_coverage.svg" width="50%"/>
+
 The server component uses several behavioral analysis engines for scoring events and has several JSON telemetry output methods available:
 
 #### Behavioral Analysis Engines
@@ -38,10 +40,6 @@ The server component uses several behavioral analysis engines for scoring events
 - Redis
 - File
 - Stdout
-
-<p align="center">
-  <img src="docs/images/global_coverage.svg" width="50%"/>
-</p>
 
 ## Example telemetry
 
