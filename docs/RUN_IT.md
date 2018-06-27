@@ -13,12 +13,12 @@ docker run \
     --rm \
     -it \
     --net=host \
-    -v /proc:/var/run/capsule8/proc/:ro \
+    -v /proc:/var/run/threatseer/proc/:ro \
     -v /sys/kernel/debug:/sys/kernel/debug \
     -v /sys/fs/cgroup:/sys/fs/cgroup \
     -v /var/lib/docker:/var/lib/docker:ro \
     -v /var/run/docker:/var/run/docker:ro \
-    dustindecker/threatseer:agent-0.3.0
+    dustindecker/threatseer:agent-0.4.0
 ```
 
 ## Running the server
@@ -29,5 +29,5 @@ docker run \
     --rm \
     -it \
     --net=host \
-    dustindecker/threatseer:server-0.3.0
+    dustindecker/threatseer:server-0.4.0
 ```

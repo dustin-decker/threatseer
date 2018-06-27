@@ -11,6 +11,7 @@ bin/logs/threatseer
 docker-elk
 out
 threatseer.nocommit.yml
+threatseer.elk.tls.yml
 threatseer.elk.yml
 threatseer.k8s.yml
 helm

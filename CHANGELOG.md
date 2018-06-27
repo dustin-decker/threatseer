@@ -1,3 +1,25 @@
+# 0.4.0
+
+BACKWARDS INCOMPATIBILITIES:
+
+None
+
+FEATURES:
+
+Added SQL DB output support - any `database/sql` compatible driver should work.
+This feature is added for an upcoming release that will have Metabase integration for analytics, dashboards, and alerting.
+
+
+IMPROVEMENTS:
+
+- use LRU cache for tracking profiled applications in the profile engine
+- overall indicator score is calculated and included in the beats outputs
+- increased kernel tracing buffer on agent to handle higher event volumes
+
+BUG FIXES:
+
+None
+
 # 0.3.0
 
 BACKWARDS INCOMPATIBILITIES:
