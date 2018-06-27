@@ -5,22 +5,21 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/dustin-decker/threatseer/server/models"
 	log "github.com/sirupsen/logrus"
 
 	"gopkg.in/yaml.v2"
-
-	"github.com/dustin-decker/threatseer/server/event"
 )
 
 // RulesEngine stores engine state
 type RulesEngine struct {
-	Out            chan event.Event
+	Out            chan models.Event
 	riskyProcesses []riskyProcess
 	ctx            context.Context
 }
 
 // AnalyzeFromPipeline initiates the engine on the pipeline
-func (engine *RulesEngine) AnalyzeFromPipeline(in chan event.Event) {
+func (engine *RulesEngine) AnalyzeFromPipeline(in chan models.Event) {
 	defer close(engine.Out)
 	for e := range in {
 		// process checks
@@ -57,7 +56,7 @@ func NewStaticRulesEngine(ctx context.Context) RulesEngine {
 		}
 	}
 	e.riskyProcesses = rp
-	e.Out = make(chan event.Event, 10)
+	e.Out = make(chan models.Event, 10)
 	e.ctx = ctx
 
 	return e

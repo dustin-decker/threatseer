@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/dustin-decker/threatseer/server/event"
-
 	api "github.com/capsule8/capsule8/api/v0"
+	"github.com/dustin-decker/threatseer/server/models"
 )
 
 type riskyProcess struct {
@@ -16,8 +15,8 @@ type riskyProcess struct {
 	Score     int    `yaml:"score"`
 }
 
-func (rp *riskyProcess) Indicator() event.Indicator {
-	return event.Indicator{
+func (rp *riskyProcess) Indicator() models.Indicator {
+	return models.Indicator{
 		Engine:        "static",
 		IndicatorType: "risky_process",
 		Description:   fmt.Sprintf("%s is a risky process often used for %s", rp.Name, rp.Reason),

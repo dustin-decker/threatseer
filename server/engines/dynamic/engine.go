@@ -8,7 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/caibirdme/yql"
-	"github.com/dustin-decker/threatseer/server/event"
+	"github.com/dustin-decker/threatseer/server/models"
 	"github.com/fatih/structs"
 	yaml "gopkg.in/yaml.v2"
 )
@@ -28,13 +28,13 @@ type Rules []struct {
 
 // RulesEngine stores engine state
 type RulesEngine struct {
-	Out   chan event.Event
+	Out   chan models.Event
 	Rules Rules
 	ctx   context.Context
 }
 
 // AnalyzeFromPipeline initiates the engine on the pipeline
-func (engine *RulesEngine) AnalyzeFromPipeline(in chan event.Event) {
+func (engine *RulesEngine) AnalyzeFromPipeline(in chan models.Event) {
 	defer close(engine.Out)
 	for e := range in {
 		// convert struct to map[string]interface{}
@@ -54,7 +54,7 @@ func (engine *RulesEngine) AnalyzeFromPipeline(in chan event.Event) {
 				if result {
 					e.Indicators = append(
 						e.Indicators,
-						event.Indicator{
+						models.Indicator{
 							Engine:        "dynamic",
 							IndicatorType: rule.IndicatorType,
 							Description:   rule.Description,
@@ -103,7 +103,7 @@ func NewDynamicRulesEngine(ctx context.Context) RulesEngine {
 		}
 		dr[i].yql = compiledRule
 	}
-	e.Out = make(chan event.Event, 10)
+	e.Out = make(chan models.Event, 10)
 
 	return e
 }

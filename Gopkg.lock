@@ -26,6 +26,12 @@
   version = "4.7.1"
 
 [[projects]]
+  name = "github.com/astaxie/beego"
+  packages = ["orm"]
+  revision = "bf5c5626ab429e66d88602e1ab1ab5fbf4629a01"
+  version = "v1.9.2"
+
+[[projects]]
   branch = "master"
   name = "github.com/caibirdme/yql"
   packages = [
@@ -417,6 +423,20 @@
   version = "v1.0"
 
 [[projects]]
+  name = "github.com/jackc/pgx"
+  packages = [
+    ".",
+    "chunkreader",
+    "internal/sanitize",
+    "pgio",
+    "pgproto3",
+    "pgtype",
+    "stdlib"
+  ]
+  revision = "da3231b0b66e2e74cdb779f1d46c5e958ba8be27"
+  version = "v3.1.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/joeshaw/multierror"
   packages = ["."]
@@ -489,6 +509,12 @@
   name = "github.com/rcrowley/go-metrics"
   packages = ["."]
   revision = "1f30fe9094a513ce4c700b9a54458bbb0c96996c"
+
+[[projects]]
+  name = "github.com/rs/xid"
+  packages = ["."]
+  revision = "2c7e97ce663ff82c49656bca3048df0fdd83c5f9"
+  version = "v1.2.0"
 
 [[projects]]
   name = "github.com/satori/go.uuid"
@@ -677,6 +703,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "4ace4269f4404b0292af788143f458471549c51419e094f8474c0bb8670d0981"
+  inputs-digest = "630d20de0914245f5c4463fce09fcfe6bc6626227b892f47e89cdd50fc422d1d"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -2,21 +2,22 @@ package daemon
 
 import (
 	"runtime"
+	"time"
 
-	"github.com/elastic/beats/libbeat/beat"
+	metrics "github.com/rcrowley/go-metrics"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/dustin-decker/threatseer/server/engines/dynamic"
 	"github.com/dustin-decker/threatseer/server/engines/profile"
 	"github.com/dustin-decker/threatseer/server/engines/shipper"
 	"github.com/dustin-decker/threatseer/server/engines/static"
-	"github.com/dustin-decker/threatseer/server/event"
+	"github.com/dustin-decker/threatseer/server/models"
 )
 
 // newPipelineFlow wires up the engine pipeline network
-func (s *Server) newPipelineFlow(b *beat.Beat, numPipelines uint) (eventChan chan event.Event) {
+func (s *Server) newPipelineFlow() (eventChan chan models.Event) {
 
-	eventChan = make(chan event.Event, 1000)
+	eventChan = make(chan models.Event, 1000)
 	go func() {
 		<-s.stopPipeline
 		close(eventChan)
@@ -31,10 +32,11 @@ func (s *Server) newPipelineFlow(b *beat.Beat, numPipelines uint) (eventChan cha
 	profileEngine := profile.NewProfileEngine(s.pipelineCtx, s.Config)
 	log.WithFields(log.Fields{"engine": "profile"}).Info("started engine")
 
-	shipperEngine := shipper.NewShipperEngine(b)
+	shipperEngine := shipper.NewShipperEngine(s.Beat, s.Config)
 	log.WithFields(log.Fields{"engine": "shipper"}).Info("started engine")
 
-	if numPipelines == 0 {
+	var numPipelines uint
+	if s.Config.NumberOfPipelines == 0 {
 		numPipelines = uint(runtime.NumCPU())
 	}
 
@@ -52,6 +54,8 @@ func (s *Server) newPipelineFlow(b *beat.Beat, numPipelines uint) (eventChan cha
 		// Final output without an output channel terminates the pipeline network
 		go shipperEngine.PublishFromPipeline(profileEngine.Out)
 	}
+
+	go metrics.Log(metrics.DefaultRegistry, 30*time.Second, s.Logger)
 
 	return
 }
