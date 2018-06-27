@@ -34,12 +34,25 @@ import (
 )
 
 func startAgent() {
-	manager := services.NewServiceManager()
-	if len(config.Global.ProfilingListenAddr) > 0 {
-		service := services.NewProfilingService(
-			config.Global.ProfilingListenAddr)
-		manager.RegisterService(service)
+	// increase tracing buffer size
+	// ref https://lwn.net/Articles/322731/
+	tracer, err := os.OpenFile("/sys/kernel/debug/tracing/current_tracer", os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+	if err == nil {
+		_, err = tracer.WriteString("nop")
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
+	// unit is KB, and is per CPU core
+	bufSize, err := os.OpenFile("/sys/kernel/debug/tracing/buffer_size_kb", os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+	if err == nil {
+		_, err = bufSize.WriteString("1024")
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	manager := services.NewServiceManager()
 
 	if len(config.Sensor.ListenAddr) > 0 {
 		s, err := sensor.NewSensor()
