@@ -15,7 +15,7 @@ endif
 help: ## this help
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
-protos:
+protos: ## generate protos for the agent API
 	protoc -I api/ \                              
 		-I${GOPATH}/src \
 		--go_out=plugins=grpc:api \
@@ -52,6 +52,12 @@ run-server: ## run the server docker image
 		-it \
 		--net=host \
 		dustindecker/threatseer-server:${VERSION}
+
+run-agent-local: ## run the agent using locally compiled binaries
+	sudo ./bin/agent
+
+run-server-local: ## run the agent using locally compiled binaries
+	./bin/server
 
 build-local: ## build agent and server locally, without docker
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build --ldflags '-extldflags "-static"' -o bin/agent agent/main.go
