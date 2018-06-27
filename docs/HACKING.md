@@ -41,34 +41,23 @@ make build-server
 
 Run the image:
 
+
 `make run-agent`
 
 `make run-server`
 
-or
+## Makefile targets
 
-``` bash
-docker run \
-  --privileged \
-  --name threatseer-agent \
-  --rm \
-  -it \
-  --net=host \
-  -v /proc:/var/run/capsule8/proc/:ro \
-  -v /sys/kernel/debug:/sys/kernel/debug \
-  -v /sys/fs/cgroup:/sys/fs/cgroup \
-  -v /var/lib/docker:/var/lib/docker:ro \
-  -v /var/run/docker:/var/run/docker:ro \
-  dustindecker/threatseer-agent
 ```
-
-and 
-
-```bash
-docker run \
-  --name threatseer-server \
-  --rm \
-  -it \
-  --net=host \
-  dustindecker/threatseer-server
+➜  threatseer git:(master) ✗ make help
+help                           this help
+protos                         generate protos for the agent API
+build-agent                    build the threatseer agent
+build-server                   build the threatseer agent
+run-agent                      run the agent docker image
+run-server                     run the server docker image
+run-agent-local                run the agent using locally compiled binaries
+run-server-local               run the agent using locally compiled binaries
+build-local                    build agent and server locally, without docker
+clean                          remove binaries
 ```
