@@ -11,3 +11,10 @@ bin/logs/threatseer
 docker-elk
 out
 threatseer.nocommit.yml
+threatseer.elk.yml
+threatseer.k8s.yml
+helm
+docker-swarm-stack.yml
+k8s
+api
+config/elk
