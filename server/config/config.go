@@ -16,6 +16,10 @@ type Config struct {
 	TLSServerKeyPath      string `config:"tls_server_key_path"`
 	TLSServerCertPath     string `config:"tls_server_cert_path"`
 	TLSOverrideCommonName string `config:"tls_override_common_name"`
+	// Outputs
+	BeatsOutput       bool `config:"beats_output"`
+	PostgresOutput    bool `config:"postgres_output"`
+	PostgresBatchSize int  `config:"postgres_batch_size"`
 }
 
 // DefaultConfig threatseer config
@@ -27,4 +31,7 @@ var DefaultConfig = Config{
 	// 8000000 events consumes about 10MB of RAM. Don't go lower.
 	ProfileEventFilterCacheSize: 10000000,
 	TLSEnabled:                  false,
+	BeatsOutput:                 true,
+	PostgresOutput:              false,
+	PostgresBatchSize:           1000,
 }

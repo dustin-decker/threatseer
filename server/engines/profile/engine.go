@@ -8,14 +8,14 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/dustin-decker/threatseer/server/config"
-	"github.com/dustin-decker/threatseer/server/event"
+	"github.com/dustin-decker/threatseer/server/models"
 	cf "github.com/seiflotfy/cuckoofilter"
 )
 
 // Engine stores engine state
 type Engine struct {
 	// pipeline output
-	Out chan event.Event
+	Out chan models.Event
 
 	// cuckoo filter for if the event is present in the profile
 	EventFilter *cf.CuckooFilter
@@ -30,7 +30,7 @@ type Engine struct {
 }
 
 // AnalyzeFromPipeline initiates the engine on the pipeline
-func (engine *Engine) AnalyzeFromPipeline(in chan event.Event) {
+func (engine *Engine) AnalyzeFromPipeline(in chan models.Event) {
 	defer close(engine.Out)
 	for e := range in {
 		// process profiling
@@ -41,7 +41,7 @@ func (engine *Engine) AnalyzeFromPipeline(in chan event.Event) {
 			if len(cmd) > 0 {
 				score := engine.profileExecEvent(e, cmd)
 				if score < 0 {
-					e.Indicators = append(e.Indicators, event.Indicator{
+					e.Indicators = append(e.Indicators, models.Indicator{
 						Engine:        "profile",
 						RuleName:      "",
 						IndicatorType: "normal_behavior",
@@ -50,7 +50,7 @@ func (engine *Engine) AnalyzeFromPipeline(in chan event.Event) {
 						Score:         score,
 					})
 				} else if score > 0 {
-					e.Indicators = append(e.Indicators, event.Indicator{
+					e.Indicators = append(e.Indicators, models.Indicator{
 						Engine:        "profile",
 						RuleName:      "",
 						IndicatorType: "abnormal_behavior",
@@ -78,7 +78,7 @@ func NewProfileEngine(ctx context.Context, c config.Config) Engine {
 	}
 
 	e := Engine{
-		Out:                     make(chan event.Event, 10),
+		Out:                     make(chan models.Event, 10),
 		IsProfiled:              profiledLRUCache,
 		EventFilter:             cf.NewCuckooFilter(c.ProfileEventFilterCacheSize),
 		IsProfiling:             profilingLRUCache,

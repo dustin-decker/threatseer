@@ -43,6 +43,11 @@
   branch = "master"
   name = "github.com/caibirdme/yql"
 
+
+[[constraint]]
+  name = "github.com/astaxie/beego"
+  version = "v1.9.2"
+
 [[constraint]]
   name = "github.com/elastic/beats"
   version = "v6.2.4"

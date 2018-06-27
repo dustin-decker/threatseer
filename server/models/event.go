@@ -1,4 +1,4 @@
-package event
+package models
 
 import (
 	api "github.com/capsule8/capsule8/api/v0"
@@ -11,14 +11,4 @@ type Event struct {
 	Event      *api.TelemetryEvent
 	Indicators []Indicator
 	ClientAddr string
-}
-
-// Indicator is an individual result from an engine
-type Indicator struct {
-	Engine        string
-	RuleName      string
-	IndicatorType string
-	Description   string
-	ExtraInfo     string
-	Score         int
 }

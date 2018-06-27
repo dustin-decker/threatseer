@@ -32,14 +32,14 @@ import (
 
 	api "github.com/capsule8/capsule8/api/v0"
 	"github.com/dustin-decker/threatseer/server/config"
-	"github.com/dustin-decker/threatseer/server/event"
+	"github.com/dustin-decker/threatseer/server/models"
 
 	"google.golang.org/grpc"
 )
 
 // Server state
 type Server struct {
-	// threatsser stuff
+	Logger       *log.Logger
 	Beat         *beat.Beat
 	done         chan struct{}
 	Config       config.Config
@@ -88,8 +88,10 @@ func (s *Server) Stop() {
 // The main event loop that should block until signalled to stop by an
 // invocation of the Stop() method.
 func (s *Server) Run(b *beat.Beat) error {
+	s.Beat = b
 	flag.Parse()
 	log.SetFormatter(&log.JSONFormatter{})
+	s.Logger = log.New()
 	logp.Info("launching tcp server")
 
 	// start tcp listener on all interfaces
@@ -146,7 +148,7 @@ func (s *Server) Run(b *beat.Beat) error {
 	log.WithFields(log.Fields{"listen_address": s.Config.ListenAddress}).Info("threatseer server listening for connections")
 
 	logp.Info("starting engine pipeline")
-	eventChan := s.newPipelineFlow(b, s.Config.NumberOfPipelines)
+	eventChan := s.newPipelineFlow()
 
 	log.Info("waiting for incoming TCP connections")
 
@@ -175,7 +177,7 @@ func (s *Server) Run(b *beat.Beat) error {
 	}
 }
 
-func (s *Server) handleConn(conn *grpc.ClientConn, eventChan chan event.Event, clientAddr string) {
+func (s *Server) handleConn(conn *grpc.ClientConn, eventChan chan models.Event, clientAddr string) {
 	defer conn.Close()
 
 	c := api.NewTelemetryServiceClient(conn)
@@ -198,9 +200,9 @@ func (s *Server) handleConn(conn *grpc.ClientConn, eventChan chan event.Event, c
 
 		for _, e := range ev.Events {
 			// send the event down the pipeline
-			eventChan <- event.Event{
+			eventChan <- models.Event{
 				Event:      e.GetEvent(),
-				Indicators: make([]event.Indicator, 0),
+				Indicators: make([]models.Indicator, 0),
 				ClientAddr: clientAddr,
 			}
 		}

@@ -4,11 +4,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/dustin-decker/threatseer/server/event"
+	"github.com/dustin-decker/threatseer/server/models"
 	log "github.com/sirupsen/logrus"
 )
 
-func (e *Engine) getBestIdentifier(evnt event.Event) string {
+func (e *Engine) getBestIdentifier(evnt models.Event) string {
 	imageID := evnt.Event.GetImageId()
 	if len(imageID) > 0 {
 		return imageID
@@ -17,7 +17,7 @@ func (e *Engine) getBestIdentifier(evnt event.Event) string {
 	return evnt.Event.GetProcessId()
 }
 
-func (e *Engine) profileExecEvent(evnt event.Event, cmd []string) int {
+func (e *Engine) profileExecEvent(evnt models.Event, cmd []string) int {
 	bestIdentifier := e.getBestIdentifier(evnt)
 	eventProfile := []byte(bestIdentifier + strings.Join(cmd, " "))
 
