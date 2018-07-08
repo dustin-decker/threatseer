@@ -1,6 +1,7 @@
 package shipper
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/astaxie/beego/orm"
@@ -180,7 +181,8 @@ func NewShipperEngine(b *beat.Beat, c config.Config) Shipper {
 
 		maxIdle := 15
 		maxConn := 15
-		err = orm.RegisterDataBase("default", "pgx", "postgres://threatseer@postgres:5432/threatseer", maxIdle, maxConn)
+		pgURI := fmt.Sprintf("postgres://threatseer@%s:5432/threatseer", c.PostgresHost)
+		err = orm.RegisterDataBase("default", "pgx", pgURI, maxIdle, maxConn)
 		if err != nil {
 			log.WithFields(log.Fields{"engine": "shipper", "err": err}).Fatal("could not register database")
 		}

@@ -295,31 +295,6 @@
   version = "v1.0"
 
 [[projects]]
-  name = "github.com/fsouza/go-dockerclient"
-  packages = [
-    ".",
-    "external/github.com/Sirupsen/logrus",
-    "external/github.com/docker/docker/opts",
-    "external/github.com/docker/docker/pkg/archive",
-    "external/github.com/docker/docker/pkg/fileutils",
-    "external/github.com/docker/docker/pkg/homedir",
-    "external/github.com/docker/docker/pkg/idtools",
-    "external/github.com/docker/docker/pkg/ioutils",
-    "external/github.com/docker/docker/pkg/longpath",
-    "external/github.com/docker/docker/pkg/pools",
-    "external/github.com/docker/docker/pkg/promise",
-    "external/github.com/docker/docker/pkg/stdcopy",
-    "external/github.com/docker/docker/pkg/system",
-    "external/github.com/docker/go-units",
-    "external/github.com/hashicorp/go-cleanhttp",
-    "external/github.com/opencontainers/runc/libcontainer/user",
-    "external/golang.org/x/net/context",
-    "external/golang.org/x/sys/unix"
-  ]
-  revision = "1d4f4ae73768d3ca16a6fb964694f58dc5eba601"
-  version = "docker-1.9/go-1.4"
-
-[[projects]]
   name = "github.com/garyburd/redigo"
   packages = [
     "internal",
@@ -333,17 +308,6 @@
   packages = ["."]
   revision = "0ca9ea5df5451ffdf184b4428c902747c2c11cd7"
   version = "v1.0.0"
-
-[[projects]]
-  name = "github.com/gliderlabs/logspout"
-  packages = [
-    "adapters/raw",
-    "router",
-    "transports/tcp",
-    "transports/udp"
-  ]
-  revision = "acfb3029418f5fff23e327872a6739a588d0931e"
-  version = "v3.2.4"
 
 [[projects]]
   name = "github.com/go-ole/go-ole"
@@ -462,12 +426,6 @@
   packages = ["."]
   revision = "ae7887de9fa5d2db4eaa8174a7eff2c1ac00f2da"
   version = "v1.1"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/looplab/logspout-logstash"
-  packages = ["."]
-  revision = "68a4e47e757da53f606a8984ef97a207b953cc7c"
 
 [[projects]]
   name = "github.com/mattn/go-colorable"
@@ -703,6 +661,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "630d20de0914245f5c4463fce09fcfe6bc6626227b892f47e89cdd50fc422d1d"
+  inputs-digest = "cebda5b1915da8d5f783e0abd0482c39ae477b03769ee1c6ff6793092003ee3c"
   solver-name = "gps-cdcl"
   solver-version = 1

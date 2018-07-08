@@ -17,9 +17,10 @@ type Config struct {
 	TLSServerCertPath     string `config:"tls_server_cert_path"`
 	TLSOverrideCommonName string `config:"tls_override_common_name"`
 	// Outputs
-	BeatsOutput       bool `config:"beats_output"`
-	PostgresOutput    bool `config:"postgres_output"`
-	PostgresBatchSize int  `config:"postgres_batch_size"`
+	BeatsOutput       bool   `config:"beats_output"`
+	PostgresOutput    bool   `config:"postgres_output"`
+	PostgresBatchSize int    `config:"postgres_batch_size"`
+	PostgresHost      string `config:"postgres_host"`
 }
 
 // DefaultConfig threatseer config
